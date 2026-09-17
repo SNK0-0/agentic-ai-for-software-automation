@@ -1,0 +1,34 @@
+{
+  "fault": "rename-rpc",
+  "service": "ShippingService",
+  "rpc": "GetQuote",
+  "proto_files_mutated": [
+    "src/paymentservice/proto/demo.proto",
+    "src/currencyservice/proto/demo.proto",
+    "src/adservice/src/main/proto/demo.proto",
+    "protos/demo.proto"
+  ],
+  "bindings_before": 39,
+  "bindings_after": 36,
+  "bindings_lost": 3,
+  "detected": true,
+  "blast_radius": {
+    "dangling_consumers": [
+      "src/checkoutservice/main.go:checkoutService.quoteShipping",
+      "src/frontend/rpc.go:frontendServer.getShippingQuote"
+    ],
+    "dangling_producers": [
+      "src/shippingservice/main.go:server.GetQuote"
+    ],
+    "services_affected": [
+      "checkoutservice",
+      "frontend",
+      "shippingservice"
+    ]
+  },
+  "lost_edges": [
+    "CONSUMES: src/checkoutservice/main.go:checkoutService.quoteShipping -> contract::ShippingService.GetQuote",
+    "CONSUMES: src/frontend/rpc.go:frontendServer.getShippingQuote -> contract::ShippingService.GetQuote",
+    "IMPLEMENTS: src/shippingservice/main.go:server.GetQuote -> contract::ShippingService.GetQuote"
+  ]
+}

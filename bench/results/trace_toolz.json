@@ -1,0 +1,16 @@
+{
+  "repo": "toolz",
+  "pytest": "1 failed, 164 passed in 3.99s",
+  "loc": 7155,
+  "static_internal_call_edges": 535,
+  "dynamic_call_edges": 532,
+  "executed_callers": 226,
+  "edge_recall": 0.4793,
+  "edge_precision_lower_bound": 0.5795,
+  "ambiguous_dynamic_calls": 202,
+  "disambiguation_accuracy": 0.0693,
+  "disambiguation_attempted_pct": 0.0693,
+  "multihop2_precision": 0.6755,
+  "multihop2_recall": 0.2503,
+  "multihop2_f1": 0.3652
+}

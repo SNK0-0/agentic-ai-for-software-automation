@@ -1,0 +1,16 @@
+{
+  "repo": "jinja",
+  "pytest": "911 passed in 12.96s",
+  "loc": 22875,
+  "static_internal_call_edges": 1825,
+  "dynamic_call_edges": 3191,
+  "executed_callers": 1191,
+  "edge_recall": 0.4293,
+  "edge_precision_lower_bound": 0.804,
+  "ambiguous_dynamic_calls": 1181,
+  "disambiguation_accuracy": 0.1008,
+  "disambiguation_attempted_pct": 0.1262,
+  "multihop2_precision": 0.8572,
+  "multihop2_recall": 0.2856,
+  "multihop2_f1": 0.4284
+}

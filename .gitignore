@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and serialized graphs
+*.pickle
+*.pkl
+.cache/
+.pytest_cache/
+
+# Benchmark clone caches (downloaded dynamically via bench scripts)
+repos/
+.numpy_ckg_cache.pickle
+
+# Environments and dependencies
+.venv/
+venv/
+ENV/
+env/
+node_modules/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Internal reports & notes
+GRAFT-CKG_Assessment_and_Gap_Report.md
+
+# Output artifacts from fault injection tests
+ckg_fault_*/
+tmp/

@@ -1,0 +1,16 @@
+{
+  "repo": "tomli",
+  "pytest": "17 passed, 1 skipped in 0.89s",
+  "loc": 1570,
+  "static_internal_call_edges": 94,
+  "dynamic_call_edges": 103,
+  "executed_callers": 40,
+  "edge_recall": 0.8155,
+  "edge_precision_lower_bound": 0.9767,
+  "ambiguous_dynamic_calls": 0,
+  "disambiguation_accuracy": null,
+  "disambiguation_attempted_pct": null,
+  "multihop2_precision": 0.9868,
+  "multihop2_recall": 0.5747,
+  "multihop2_f1": 0.7264
+}

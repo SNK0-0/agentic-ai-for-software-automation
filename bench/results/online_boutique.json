@@ -1,0 +1,37 @@
+{
+  "repo": "/home/user/work/repos/online-boutique",
+  "total_loc": 22093,
+  "kloc": 22.093,
+  "build_time_s": 1.0688,
+  "throughput_s_per_kloc": 0.0484,
+  "nodes": 7639,
+  "edges": 20432,
+  "layer_distribution": {
+    "Lsyn": 2003,
+    "Ldep": 3545,
+    "Lflow": 13324,
+    "Lsem": 1450,
+    "Lcontract": 110
+  },
+  "call_resolution_pct": 9.85,
+  "docstring_coverage_pct": 5.4,
+  "contract_services": 10,
+  "contract_eval": {
+    "consumer": {
+      "labelled_parseable": 21,
+      "graph_edges": 21,
+      "true_positives": 21,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "producer": {
+      "labelled_parseable": 7,
+      "graph_edges": 23,
+      "services_recovered": 7,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  }
+}

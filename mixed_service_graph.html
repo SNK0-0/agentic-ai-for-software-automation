@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>window.STANDALONE_DATA = {"repo_name": "mixed_service", "nodes": [{"id": "file::backend/api.py", "label": "api.py", "title": "file::backend/api.py [Lsyn]", "type": "file", "layer": "Lsyn", "file": "backend/api.py", "line": 1, "shape": "dot", "color": {"background": "#ea580c", "border": "#ffffff"}, "size": 20, "docstring": "Minimal Flask-style source fixture used for static cross-service evaluation.", "code": "# File: backend/api.py\n# Lines: 22"}, {"id": "backend/api.py:DemoApp", "label": "DemoApp", "title": "backend/api.py:DemoApp [Lsyn]", "type": "class", "layer": "Lsyn", "file": "backend/api.py", "line": 4, "shape": "dot", "color": {"background": "#16a34a", "border": "#ffffff"}, "size": 16, "docstring": "", "code": "class DemoApp:\n    def get(self, path):\n        return lambda handler: handler\n\n    def route(self, path, methods=None):\n        return lambda handler: handler"}, {"id": "backend/api.py:DemoApp.get", "label": "get", "title": "backend/api.py:DemoApp.get [Lsyn]", "type": "function", "layer": "Lsyn", "file": "backend/api.py", "line": 5, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": "    def get(self, path):\n        return lambda handler: handler"}, {"id": "backend/api.py:DemoApp.get.var::self", "label": "self", "title": "backend/api.py:DemoApp.get.var::self [Lflow]", "type": "variable", "layer": "Lflow", "file": "backend/api.py", "line": 5, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.get.var::path", "label": "path", "title": "backend/api.py:DemoApp.get.var::path [Lflow]", "type": "variable", "layer": "Lflow", "file": "backend/api.py", "line": 5, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.get.return::6", "label": "return", "title": "backend/api.py:DemoApp.get.return::6 [Lflow]", "type": "return", "layer": "Lflow", "file": "backend/api.py", "line": 6, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.route", "label": "route", "title": "backend/api.py:DemoApp.route [Lsyn]", "type": "function", "layer": "Lsyn", "file": "backend/api.py", "line": 8, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": "    def route(self, path, methods=None):\n        return lambda handler: handler"}, {"id": "backend/api.py:DemoApp.route.var::self", "label": "self", "title": "backend/api.py:DemoApp.route.var::self [Lflow]", "type": "variable", "layer": "Lflow", "file": "backend/api.py", "line": 8, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.route.var::path", "label": "path", "title": "backend/api.py:DemoApp.route.var::path [Lflow]", "type": "variable", "layer": "Lflow", "file": "backend/api.py", "line": 8, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.route.var::methods", "label": "methods", "title": "backend/api.py:DemoApp.route.var::methods [Lflow]", "type": "variable", "layer": "Lflow", "file": "backend/api.py", "line": 8, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:DemoApp.route.return::9", "label": "return", "title": "backend/api.py:DemoApp.route.return::9 [Lflow]", "type": "return", "layer": "Lflow", "file": "backend/api.py", "line": 9, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:get_greeting", "label": "get_greeting", "title": "backend/api.py:get_greeting [Lsyn]", "type": "function", "layer": "Lsyn", "file": "backend/api.py", "line": 16, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": "def get_greeting():\n    return {\"message\": \"hello\"}"}, {"id": "backend/api.py:get_greeting.return::17", "label": "return", "title": "backend/api.py:get_greeting.return::17 [Lflow]", "type": "return", "layer": "Lflow", "file": "backend/api.py", "line": 17, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "backend/api.py:echo", "label": "echo", "title": "backend/api.py:echo [Lsyn]", "type": "function", "layer": "Lsyn", "file": "backend/api.py", "line": 21, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": "def echo():\n    return {\"accepted\": True}"}, {"id": "backend/api.py:echo.return::22", "label": "return", "title": "backend/api.py:echo.return::22 [Lflow]", "type": "return", "layer": "Lflow", "file": "backend/api.py", "line": 22, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "file::frontend/client.ts", "label": "client.ts", "title": "file::frontend/client.ts [Lsyn]", "type": "file", "layer": "Lsyn", "file": "frontend/client.ts", "line": 1, "shape": "dot", "color": {"background": "#ea580c", "border": "#ffffff"}, "size": 20, "docstring": "", "code": "// File: frontend/client.ts\n// Lines: 12"}, {"id": "frontend/client.ts:loadGreeting", "label": "loadGreeting", "title": "frontend/client.ts:loadGreeting [Lsyn]", "type": "function", "layer": "Lsyn", "file": "frontend/client.ts", "line": 1, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": ""}, {"id": "frontend/client.ts:loadGreeting.var::response", "label": "response", "title": "frontend/client.ts:loadGreeting.var::response [Lflow]", "type": "variable", "layer": "Lflow", "file": "frontend/client.ts", "line": 2, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "frontend/client.ts:loadGreeting.return::3", "label": "return", "title": "frontend/client.ts:loadGreeting.return::3 [Lflow]", "type": "return", "layer": "Lflow", "file": "frontend/client.ts", "line": 3, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "frontend/client.ts:sendEcho", "label": "sendEcho", "title": "frontend/client.ts:sendEcho [Lsyn]", "type": "function", "layer": "Lsyn", "file": "frontend/client.ts", "line": 6, "shape": "dot", "color": {"background": "#2563eb", "border": "#ffffff"}, "size": 12, "docstring": "", "code": ""}, {"id": "frontend/client.ts:sendEcho.var::message", "label": "message", "title": "frontend/client.ts:sendEcho.var::message [Lflow]", "type": "variable", "layer": "Lflow", "file": "frontend/client.ts", "line": 6, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "frontend/client.ts:sendEcho.var::response", "label": "response", "title": "frontend/client.ts:sendEcho.var::response [Lflow]", "type": "variable", "layer": "Lflow", "file": "frontend/client.ts", "line": 7, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "frontend/client.ts:sendEcho.return::11", "label": "return", "title": "frontend/client.ts:sendEcho.return::11 [Lflow]", "type": "return", "layer": "Lflow", "file": "frontend/client.ts", "line": 11, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "external::fetch", "label": "fetch", "title": "external::fetch [Ldep]", "type": "external_func", "layer": "Ldep", "file": "frontend/client.ts", "line": 0, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "external::response.json", "label": "response.json", "title": "external::response.json [Ldep]", "type": "external_func", "layer": "Ldep", "file": "frontend/client.ts", "line": 0, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}, {"id": "external::JSON.stringify", "label": "JSON.stringify", "title": "external::JSON.stringify [Ldep]", "type": "external_func", "layer": "Ldep", "file": "frontend/client.ts", "line": 0, "shape": "dot", "color": {"background": "#0284c7", "border": "#ffffff"}, "size": 14, "docstring": "", "code": ""}], "edges": [{"id": "e0", "from": "file::backend/api.py", "to": "backend/api.py:DemoApp", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e10", "from": "file::backend/api.py", "to": "backend/api.py:get_greeting", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e12", "from": "file::backend/api.py", "to": "backend/api.py:echo", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e1", "from": "backend/api.py:DemoApp", "to": "backend/api.py:DemoApp.get", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e5", "from": "backend/api.py:DemoApp", "to": "backend/api.py:DemoApp.route", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e2", "from": "backend/api.py:DemoApp.get", "to": "backend/api.py:DemoApp.get.var::self", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e3", "from": "backend/api.py:DemoApp.get", "to": "backend/api.py:DemoApp.get.var::path", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e4", "from": "backend/api.py:DemoApp.get", "to": "backend/api.py:DemoApp.get.return::6", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e6", "from": "backend/api.py:DemoApp.route", "to": "backend/api.py:DemoApp.route.var::self", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e7", "from": "backend/api.py:DemoApp.route", "to": "backend/api.py:DemoApp.route.var::path", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e8", "from": "backend/api.py:DemoApp.route", "to": "backend/api.py:DemoApp.route.var::methods", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e9", "from": "backend/api.py:DemoApp.route", "to": "backend/api.py:DemoApp.route.return::9", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e11", "from": "backend/api.py:get_greeting", "to": "backend/api.py:get_greeting.return::17", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e25", "from": "backend/api.py:get_greeting", "to": "backend/api.py:DemoApp.get", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e13", "from": "backend/api.py:echo", "to": "backend/api.py:echo.return::22", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e26", "from": "backend/api.py:echo", "to": "backend/api.py:DemoApp.route", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e14", "from": "file::frontend/client.ts", "to": "frontend/client.ts:loadGreeting", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e19", "from": "file::frontend/client.ts", "to": "frontend/client.ts:sendEcho", "color": {"color": "#0284c7"}, "layer": "Lsyn", "relation": "CONTAINS", "title": "CONTAINS (Lsyn)"}, {"id": "e15", "from": "frontend/client.ts:loadGreeting", "to": "frontend/client.ts:loadGreeting.var::response", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "DEFINES", "title": "DEFINES (Lflow)"}, {"id": "e18", "from": "frontend/client.ts:loadGreeting", "to": "frontend/client.ts:loadGreeting.var::response", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "USES", "title": "USES (Lflow)"}, {"id": "e16", "from": "frontend/client.ts:loadGreeting", "to": "frontend/client.ts:loadGreeting.return::3", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e27", "from": "frontend/client.ts:loadGreeting", "to": "external::fetch", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e28", "from": "frontend/client.ts:loadGreeting", "to": "external::response.json", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e32", "from": "frontend/client.ts:loadGreeting", "to": "backend/api.py:get_greeting", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "HTTP_CALLS", "title": "HTTP_CALLS (Ldep)"}, {"id": "e17", "from": "frontend/client.ts:loadGreeting.var::response", "to": "frontend/client.ts:loadGreeting.return::3", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "FLOWS_TO", "title": "FLOWS_TO (Lflow)"}, {"id": "e20", "from": "frontend/client.ts:sendEcho", "to": "frontend/client.ts:sendEcho.var::message", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "PASSES_ARG", "title": "PASSES_ARG (Lflow)"}, {"id": "e21", "from": "frontend/client.ts:sendEcho", "to": "frontend/client.ts:sendEcho.var::response", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "DEFINES", "title": "DEFINES (Lflow)"}, {"id": "e24", "from": "frontend/client.ts:sendEcho", "to": "frontend/client.ts:sendEcho.var::response", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "USES", "title": "USES (Lflow)"}, {"id": "e22", "from": "frontend/client.ts:sendEcho", "to": "frontend/client.ts:sendEcho.return::11", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "RETURNS", "title": "RETURNS (Lflow)"}, {"id": "e29", "from": "frontend/client.ts:sendEcho", "to": "external::fetch", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e30", "from": "frontend/client.ts:sendEcho", "to": "external::JSON.stringify", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e31", "from": "frontend/client.ts:sendEcho", "to": "external::response.json", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "CALLS", "title": "CALLS (Ldep)"}, {"id": "e33", "from": "frontend/client.ts:sendEcho", "to": "backend/api.py:echo", "color": {"color": "#e11d48"}, "layer": "Ldep", "relation": "HTTP_CALLS", "title": "HTTP_CALLS (Ldep)"}, {"id": "e23", "from": "frontend/client.ts:sendEcho.var::response", "to": "frontend/client.ts:sendEcho.return::11", "color": {"color": "#059669"}, "layer": "Lflow", "relation": "FLOWS_TO", "title": "FLOWS_TO (Lflow)"}]};</script>
+
+  <meta charset="UTF-8">
+  <title>GRAFT-CKG Explorer</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --sidebar-bg: #f8fafc;
+      --panel-bg: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+
+      --lsyn: #0284c7;
+      --ldep: #e11d48;
+      --lflow: #059669;
+      --lsem: #9333ea;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
+    body { background: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 13px; }
+
+    /* Left Control Sidebar */
+    #sidebar {
+      width: 400px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .top-brand {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-main); font-family: ui-monospace, monospace; }
+    .brand-repo { font-size: 11px; color: var(--text-muted); font-family: ui-monospace, monospace; background: #f1f5f9; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); }
+
+    /* Query Config Section */
+    .control-section { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; background: #ffffff; }
+
+    .segmented-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .segment-btn {
+      flex: 1;
+      padding: 6px 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .segment-btn.active {
+      background: #ffffff;
+      color: var(--text-main);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .search-row { display: flex; gap: 8px; }
+    .input-field {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text-main);
+      font-size: 12px;
+      font-family: ui-monospace, monospace;
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
+    .primary-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .primary-btn:hover { background: var(--accent-hover); }
+
+    /* Filters & Options Grid */
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: var(--text-muted); }
+    .filter-item { display: flex; align-items: center; gap: 6px; }
+    .filter-item select {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .layer-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+    .layer-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .layer-chip.active { color: var(--text-main); border-color: var(--text-muted); background: #ffffff; }
+
+    .sample-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .quick-chip {
+      font-size: 11px;
+      font-family: ui-monospace, monospace;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .quick-chip:hover { border-color: var(--accent); color: var(--accent); background: #ffffff; }
+
+    /* Results Inspector Panel */
+    #inspector-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .empty-state { text-align: center; color: var(--text-dim); margin-top: 60px; font-size: 12px; line-height: 1.6; }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .summary-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .node-title-lg { font-size: 13px; font-weight: 700; color: var(--text-main); font-family: ui-monospace, monospace; word-break: break-all; }
+    .node-subtext { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .hop-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+    .hop-table th { text-align: left; padding: 6px 8px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; }
+    .hop-table td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; font-family: ui-monospace, monospace; }
+    .hop-table tr:hover { background: #f8fafc; cursor: pointer; }
+
+    .badge-pill { display: inline-block; font-size: 9px; padding: 1px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase; font-family: ui-monospace, monospace; }
+    .badge-lsyn { background: rgba(2,132,199,0.1); color: var(--lsyn); border: 1px solid var(--lsyn); }
+    .badge-ldep { background: rgba(225,29,72,0.1); color: var(--ldep); border: 1px solid var(--ldep); }
+    .badge-lflow { background: rgba(5,150,105,0.1); color: var(--lflow); border: 1px solid var(--lflow); }
+    .badge-lsem { background: rgba(147,51,234,0.1); color: var(--lsem); border: 1px solid var(--lsem); }
+
+    /* Main Graph Area */
+    #canvas-view { flex: 1; position: relative; height: 100vh; background: #ffffff; }
+    #network-canvas { width: 100%; height: 100%; }
+
+    /* Top Floating Controls Bar */
+    .floating-toolbar {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      z-index: 5;
+    }
+    .tool-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tool-btn:hover { color: var(--text-main); border-color: var(--border-focus); background: #ffffff; }
+    .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .floating-status {
+      position: absolute;
+      bottom: 14px;
+      left: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: ui-monospace, monospace;
+      pointer-events: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+
+    /* BOTTOM RIGHT FLOATING NODE INSPECTOR WINDOW */
+    #node-popup {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 360px;
+      max-height: 480px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+      display: none;
+      flex-direction: column;
+      z-index: 20;
+      overflow: hidden;
+      animation: popIn 0.2s ease-out;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .popup-header {
+      padding: 12px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .popup-title { font-size: 12px; font-weight: 700; color: var(--text-main); font-family: ui-monospace, monospace; word-break: break-all; }
+    .popup-close { background: transparent; border: none; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+    .popup-close:hover { background: #e2e8f0; color: var(--text-main); }
+
+    .popup-body {
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+    }
+    .popup-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+    .popup-code {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      font-family: ui-monospace, monospace;
+      color: #0f172a;
+      overflow-x: auto;
+      max-height: 160px;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="top-brand">
+      <div class="brand-title">GRAFT-CKG WORKBENCH</div>
+      <div class="brand-repo" id="repo-badge">Loading...</div>
+    </div>
+
+    <!-- Query Inputs -->
+    <div class="control-section">
+      <div class="segmented-tabs">
+        <button class="segment-btn active" id="mode-nhop" onclick="setMode('nhop')">N-Hop Adjacency</button>
+        <button class="segment-btn" id="mode-rag" onclick="setMode('rag')">Natural RAG</button>
+      </div>
+
+      <div class="search-row">
+        <input type="text" id="query-input" class="input-field" placeholder="Target Symbol (e.g. Session.request)" onkeydown="if(event.key==='Enter') executeQuery()">
+        <button class="primary-btn" onclick="executeQuery()">Retrieve</button>
+      </div>
+
+      <div class="sample-row" id="sample-row">
+        <span class="quick-chip" onclick="quickSearch('Session.request')">Session.request</span>
+        <span class="quick-chip" onclick="quickSearch('Session.send')">Session.send</span>
+        <span class="quick-chip" onclick="quickSearch('PreparedRequest.prepare')">PreparedRequest</span>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-grid">
+        <div class="filter-item">
+          <label>Hop Depth:</label>
+          <select id="hop-depth" onchange="if(lastQuery) executeQuery()">
+            <option value="1" selected>1 Hop (Direct)</option>
+            <option value="2">2 Hops (Transitive)</option>
+            <option value="3">3 Hops (Extended)</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Direction:</label>
+          <select id="direction" onchange="if(lastQuery) executeQuery()">
+            <option value="both" selected>Both (In + Out)</option>
+            <option value="out">Outgoing (Callees)</option>
+            <option value="in">Incoming (Callers)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Layer Filters -->
+      <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Filter Layers:</div>
+      <div class="layer-toggles">
+        <label class="layer-chip active"><input type="checkbox" id="layer-lsyn" checked onchange="executeQuery()"> <span style="color:var(--lsyn)">●</span> Lsyn</label>
+        <label class="layer-chip active"><input type="checkbox" id="layer-ldep" checked onchange="executeQuery()"> <span style="color:var(--ldep)">●</span> Ldep</label>
+        <label class="layer-chip active"><input type="checkbox" id="layer-lflow" checked onchange="executeQuery()"> <span style="color:var(--lflow)">●</span> Lflow</label>
+        <label class="layer-chip active"><input type="checkbox" id="layer-lsem" checked onchange="executeQuery()"> <span style="color:var(--lsem)">●</span> Lsem</label>
+      </div>
+    </div>
+
+    <!-- Inspector Results Area -->
+    <div id="inspector-panel">
+      <div class="empty-state">
+        Select a circular node or enter a symbol query above to retrieve its N-hop execution slice.
+      </div>
+    </div>
+  </div>
+
+  <!-- Graph Canvas Area -->
+  <div id="canvas-view">
+    <div class="floating-toolbar">
+      <button class="tool-btn" id="physics-btn" onclick="togglePhysics()">Static (Locked)</button>
+      <button class="tool-btn" id="isolate-btn" onclick="toggleIsolateMode()">Mode: Shaded</button>
+      <button class="tool-btn" onclick="resetView()">Reset View</button>
+    </div>
+
+    <div id="network-canvas"></div>
+    <div class="floating-status" id="status-display">Initializing graph topology...</div>
+
+    <!-- BOTTOM RIGHT POPUP NODE INFO WINDOW -->
+    <div id="node-popup">
+      <div class="popup-header">
+        <div class="popup-title" id="popup-title">Node Inspector</div>
+        <button class="popup-close" onclick="closePopup()">✕</button>
+      </div>
+      <div class="popup-body" id="popup-content">
+        <!-- Content injected dynamically on node click -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let network = null;
+    let nodesDataSet = null;
+    let edgesDataSet = null;
+    let rawNodes = [];
+    let rawEdges = [];
+    let currentMode = 'nhop';
+    let lastQuery = null;
+    let isolateOnly = false;
+    let physicsActive = false;
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('mode-nhop').classList.toggle('active', mode === 'nhop');
+      document.getElementById('mode-rag').classList.toggle('active', mode === 'rag');
+      document.getElementById('query-input').placeholder = (mode === 'nhop')
+        ? "Target Symbol (e.g. Session.request)"
+        : "Natural language query (e.g. send http request)";
+    }
+
+    function quickSearch(sym) {
+      document.getElementById('query-input').value = sym;
+      executeQuery();
+    }
+
+    function getSelectedLayers() {
+      const layers = [];
+      if (document.getElementById('layer-lsyn').checked) layers.push('Lsyn');
+      if (document.getElementById('layer-ldep').checked) layers.push('Ldep');
+      if (document.getElementById('layer-lflow').checked) layers.push('Lflow');
+      if (document.getElementById('layer-lsem').checked) layers.push('Lsem');
+      return layers;
+    }
+
+    // Initialize clean graph layout on white background
+    async function initGraph() {
+      try {
+        let data;
+        if (window.STANDALONE_DATA) {
+          data = window.STANDALONE_DATA;
+        } else {
+          const res = await fetch('/api/graph');
+          data = await res.json();
+        }
+        document.getElementById('repo-badge').innerText = data.repo_name;
+
+        if (data.repo_name.toLowerCase().includes('numpy')) {
+          document.getElementById('sample-row').innerHTML = `
+            <span class="quick-chip" onclick="quickSearch('inv')">inv</span>
+            <span class="quick-chip" onclick="quickSearch('fft')">fft</span>
+            <span class="quick-chip" onclick="quickSearch('zeros')">zeros</span>
+            <span class="quick-chip" onclick="quickSearch('matmul')">matmul</span>
+          `;
+        }
+
+        rawNodes = data.nodes;
+        rawEdges = data.edges;
+
+        nodesDataSet = new vis.DataSet(rawNodes);
+        edgesDataSet = new vis.DataSet(rawEdges);
+
+        const container = document.getElementById('network-canvas');
+        const graphData = { nodes: nodesDataSet, edges: edgesDataSet };
+
+        const options = {
+          nodes: {
+            shape: 'dot',       // ALL NODES ARE CIRCULAR DOTS
+            borderWidth: 1,
+            borderWidthSelected: 2,
+            font: { size: 11, color: '#1e293b', face: 'ui-monospace, monospace' }
+          },
+          edges: {
+            smooth: false, // Straight directed lines = 10x faster canvas rendering, crisp arrows
+            arrows: {
+              to: { enabled: true, scaleFactor: 0.65 }
+            },
+            width: 0.8
+          },
+          physics: {
+            enabled: true,
+            forceAtlas2Based: {
+              gravitationalConstant: -700,
+              centralGravity: 0.25,
+              springLength: 70,
+              springConstant: 0.08
+            },
+            solver: 'forceAtlas2Based',
+            stabilization: {
+              enabled: true,
+              iterations: 45,
+              updateInterval: 15
+            }
+          },
+          interaction: {
+            hover: false,
+            tooltipDelay: 150,
+            hideEdgesOnDrag: true,
+            hideEdgesOnZoom: true
+          }
+        };
+
+        network = new vis.Network(container, graphData, options);
+
+        // STOP CONTINUOUS MOVEMENT: Lock physics as soon as layout stabilizes
+        network.once("stabilizationIterationsDone", function () {
+          freezePhysics();
+          document.getElementById('status-display').innerText = `Ready: ${rawNodes.length} circular nodes, ${rawEdges.length} directed edges (Locked)`;
+        });
+
+        // Click any node: Open bottom-right floating window + retrieve neighborhood
+        network.on("click", function (params) {
+          if (params.nodes.length > 0) {
+            const clickedId = params.nodes[0];
+            showNodePopup(clickedId);
+            document.getElementById('query-input').value = clickedId;
+            setMode('nhop');
+            executeQuery();
+          } else {
+            closePopup();
+          }
+        });
+
+      } catch (err) {
+        document.getElementById('status-display').innerText = "Init error: " + err;
+      }
+    }
+
+    function freezePhysics() {
+      if (network) {
+        network.setOptions({ physics: { enabled: false } });
+        physicsActive = false;
+        document.getElementById('physics-btn').innerText = "Static (Locked)";
+        document.getElementById('physics-btn').classList.remove('active');
+      }
+    }
+
+    function togglePhysics() {
+      physicsActive = !physicsActive;
+      network.setOptions({ physics: { enabled: physicsActive } });
+      document.getElementById('physics-btn').innerText = physicsActive ? "Physics: Running" : "Static (Locked)";
+      document.getElementById('physics-btn').classList.toggle('active', physicsActive);
+    }
+
+    function toggleIsolateMode() {
+      isolateOnly = !isolateOnly;
+      document.getElementById('isolate-btn').innerText = isolateOnly ? "Mode: Isolated Only" : "Mode: Shaded";
+      document.getElementById('isolate-btn').classList.toggle('active', isolateOnly);
+      if (lastQuery) applyVisualShading(lastQuery.result, lastQuery.root);
+    }
+
+    function clientNhop(rootId, maxHops, direction, layersStr) {
+      const allowedLayers = layersStr ? new Set(layersStr.split(',').map(s => s.trim()).filter(Boolean)) : null;
+      let rootNode = rawNodes.find(n => n.id === rootId || n.id.toLowerCase() === rootId.toLowerCase() || (n.label && n.label.toLowerCase() === rootId.toLowerCase()) || n.id.includes(rootId));
+      if (!rootNode) return { error: "Symbol '" + rootId + "' not found in graph." };
+
+      const actualRoot = rootNode.id;
+      const visited = { [actualRoot]: 0 };
+      const queue = [[actualRoot, 0]];
+      const retrievedEdges = [];
+
+      while (queue.length > 0) {
+        const [curr, depth] = queue.shift();
+        if (depth >= maxHops) continue;
+
+        rawEdges.forEach(e => {
+          if (allowedLayers && !allowedLayers.has(e.layer)) return;
+          if ((direction === 'out' || direction === 'both') && e.from === curr) {
+            retrievedEdges.push({ id: e.id, source: e.from, target: e.to, relation: e.relation, layer: e.layer, direction: 'out', hop: depth + 1 });
+            if (!(e.to in visited) || visited[e.to] > depth + 1) {
+              visited[e.to] = depth + 1;
+              queue.push([e.to, depth + 1]);
+            }
+          }
+          if ((direction === 'in' || direction === 'both') && e.to === curr) {
+            retrievedEdges.push({ id: e.id, source: e.from, target: e.to, relation: e.relation, layer: e.layer, direction: 'in', hop: depth + 1 });
+            if (!(e.from in visited) || visited[e.from] > depth + 1) {
+              visited[e.from] = depth + 1;
+              queue.push([e.from, depth + 1]);
+            }
+          }
+        });
+      }
+
+      const nodesPayload = Object.keys(visited).map(nid => {
+        const n = rawNodes.find(item => item.id === nid) || { id: nid, label: nid };
+        return {
+          id: nid,
+          name: n.label || nid.split(':').pop(),
+          type: n.type || 'unknown',
+          layer: n.layer || 'Lsyn',
+          file: n.file || '',
+          line: n.line || 0,
+          hop: visited[nid],
+          docstring: n.docstring || '',
+          code: n.code || ''
+        };
+      });
+
+      return {
+        root_id: actualRoot,
+        max_hops: maxHops,
+        direction: direction,
+        total_nodes: nodesPayload.length,
+        total_edges: retrievedEdges.length,
+        nodes: nodesPayload,
+        edges: retrievedEdges
+      };
+    }
+
+    function clientRagNhop(queryText, maxHops, direction, layersStr) {
+      const qTokens = queryText.toLowerCase().split(/\s+/).filter(Boolean);
+      let bestNode = null;
+      let bestScore = -1;
+
+      rawNodes.forEach(n => {
+        const text = `${n.id} ${n.label || ''} ${n.docstring || ''} ${n.code || ''}`.toLowerCase();
+        let score = 0;
+        qTokens.forEach(t => {
+          if (text.includes(t)) score += 1;
+        });
+        if (score > bestScore) {
+          bestScore = score;
+          bestNode = n;
+        }
+      });
+
+      if (!bestNode || bestScore <= 0) {
+        return { error: "No relevant symbols found for: '" + queryText + "'" };
+      }
+      const res = clientNhop(bestNode.id, maxHops, direction, layersStr);
+      res.rag_score = bestScore;
+      return res;
+    }
+
+    // Execute Retrieval
+    async function executeQuery() {
+      const q = document.getElementById('query-input').value.trim();
+      if (!q) return;
+
+      const hops = document.getElementById('hop-depth').value;
+      const direction = document.getElementById('direction').value;
+      const layers = getSelectedLayers().join(',');
+
+      document.getElementById('status-display').innerText = `Retrieving: ${q}...`;
+
+      if (window.STANDALONE_DATA) {
+        const data = (currentMode === 'nhop')
+          ? clientNhop(q, parseInt(hops), direction, layers)
+          : clientRagNhop(q, parseInt(hops), direction, layers);
+
+        if (data.error) {
+          renderError(data.error);
+          return;
+        }
+        lastQuery = { result: data, root: data.root_id };
+        applyVisualShading(data, data.root_id);
+        renderInspector(data);
+        showNodePopup(data.root_id, data);
+        document.getElementById('status-display').innerText = `Retrieved: ${data.root_id} (${data.total_nodes} nodes within ${data.max_hops} hop${data.max_hops>1?'s':''})`;
+        return;
+      }
+
+      let endpoint = (currentMode === 'nhop')
+        ? `/api/nhop?node=${encodeURIComponent(q)}&hops=${hops}&direction=${direction}&layers=${layers}`
+        : `/api/rag_nhop?q=${encodeURIComponent(q)}&hops=${hops}&direction=${direction}&layers=${layers}`;
+
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        if (data.error) {
+          renderError(data.error);
+          return;
+        }
+
+        lastQuery = { result: data, root: data.root_id };
+        applyVisualShading(data, data.root_id);
+        renderInspector(data);
+        showNodePopup(data.root_id, data);
+
+        document.getElementById('status-display').innerText = `Retrieved: ${data.root_id} (${data.total_nodes} nodes within ${data.max_hops} hop${data.max_hops>1?'s':''})`;
+      } catch (err) {
+        renderError(err.toString());
+      }
+    }
+
+    // Visual Shading on White Background
+    function applyVisualShading(data, rootId) {
+      const activeNodeMap = new Map();
+      data.nodes.forEach(n => activeNodeMap.set(n.id, n.hop));
+
+      const activeEdgeSet = new Set();
+      data.edges.forEach(e => activeEdgeSet.add(e.id));
+
+      // Dynamically add any queried nodes/edges that were not in the initial canvas
+      data.nodes.forEach(n => {
+        if (!nodesDataSet.get(n.id)) {
+          const defaultColor = (n.type === 'file') ? '#ea580c' : (n.type === 'class' ? '#16a34a' : '#2563eb');
+          const newNode = {
+            id: n.id,
+            label: n.name,
+            shape: 'dot',
+            size: 14,
+            color: { background: defaultColor, border: '#ffffff' },
+            font: { color: '#0f172a', size: 10 }
+          };
+          nodesDataSet.add(newNode);
+          rawNodes.push(newNode);
+        }
+      });
+      data.edges.forEach(e => {
+        if (!edgesDataSet.get(e.id)) {
+          let edgeColor = '#0284c7';
+          if (e.layer === 'Ldep') edgeColor = '#e11d48';
+          else if (e.layer === 'Lflow') edgeColor = '#059669';
+          else if (e.layer === 'Lsem') edgeColor = '#9333ea';
+          const newEdge = {
+            id: e.id,
+            from: e.source,
+            to: e.target,
+            color: { color: edgeColor },
+            width: 1.5,
+            arrows: { to: { enabled: true, scaleFactor: 0.65 } }
+          };
+          edgesDataSet.add(newEdge);
+          rawEdges.push(newEdge);
+        }
+      });
+
+      const nodeUpdates = [];
+      const edgeUpdates = [];
+
+      rawNodes.forEach(node => {
+        const isRoot = (node.id === rootId);
+        const inNeighborhood = activeNodeMap.has(node.id);
+
+        if (inNeighborhood) {
+          const hop = activeNodeMap.get(node.id);
+          nodeUpdates.push({
+            id: node.id,
+            hidden: false,
+            shape: 'dot',
+            color: isRoot
+              ? { background: '#ef4444', border: '#991b1b' } // Root: Red circle
+              : { background: node.color.background, border: '#334155' },
+            size: isRoot ? 26 : (hop === 1 ? 18 : 13),
+            font: { color: '#0f172a', size: isRoot ? 13 : 10 },
+            opacity: 1.0
+          });
+        } else {
+          // Shaded out on white canvas: faint grey dot with hidden label
+          nodeUpdates.push({
+            id: node.id,
+            hidden: isolateOnly,
+            shape: 'dot',
+            color: { background: '#e2e8f0', border: '#cbd5e1' },
+            size: 6,
+            font: { color: 'transparent', size: 0 },
+            opacity: 0.18
+          });
+        }
+      });
+
+      rawEdges.forEach(edge => {
+        const isActive = activeEdgeSet.has(edge.id);
+        if (isActive) {
+          edgeUpdates.push({
+            id: edge.id,
+            hidden: false,
+            width: 2.0,
+            opacity: 1.0
+          });
+        } else {
+          edgeUpdates.push({
+            id: edge.id,
+            hidden: isolateOnly,
+            width: 0.4,
+            color: { color: '#e2e8f0' },
+            opacity: 0.12
+          });
+        }
+      });
+
+      nodesDataSet.update(nodeUpdates);
+      edgesDataSet.update(edgeUpdates);
+
+      if (network && rootId) {
+        network.focus(rootId, {
+          scale: 1.2,
+          animation: { duration: 500, easingFunction: 'easeInOutQuad' }
+        });
+      }
+    }
+
+    // BOTTOM RIGHT FLOATING WINDOW: Shows Node Details
+    async function showNodePopup(nodeId, cachedData=null) {
+      const popup = document.getElementById('node-popup');
+      const title = document.getElementById('popup-title');
+      const content = document.getElementById('popup-content');
+
+      title.innerText = nodeId.split(':').pop();
+
+      // Find node info
+      let nodeData = null;
+      if (cachedData && cachedData.nodes) {
+        nodeData = cachedData.nodes.find(n => n.id === nodeId);
+      }
+      if (!nodeData) {
+        nodeData = rawNodes.find(n => n.id === nodeId);
+      }
+
+      if (!nodeData) {
+        content.innerHTML = `<div style="color:var(--text-muted)">Loading node information...</div>`;
+        popup.style.display = 'flex';
+        return;
+      }
+
+      let html = `
+        <div class="popup-row">
+          <span>Type: <b style="color:var(--text-main)">${nodeData.type || 'Symbol'}</b></span>
+          <span class="badge-pill badge-${(nodeData.layer||'Lsyn').toLowerCase()}">${nodeData.layer || 'Lsyn'}</span>
+        </div>
+        <div class="popup-row">
+          <span>File:</span> <span style="font-family:ui-monospace">${nodeData.file || 'N/A'}</span>
+        </div>
+        <div class="popup-row">
+          <span>Line:</span> <span style="font-family:ui-monospace">${nodeData.line || '1'}</span>
+        </div>
+      `;
+
+      if (nodeData.docstring) {
+        html += `
+          <div style="font-size:11px; color:var(--text-muted); background:#f8fafc; border:1px solid var(--border); padding:8px; border-radius:4px; font-style:italic;">
+            "${escapeHtml(nodeData.docstring)}"
+          </div>
+        `;
+      }
+
+      if (nodeData.code) {
+        html += `
+          <div style="font-size:11px; font-weight:600; color:var(--text-muted); margin-top:4px;">Source Slice:</div>
+          <div class="popup-code">${escapeHtml(nodeData.code)}</div>
+        `;
+      }
+
+      content.innerHTML = html;
+      popup.style.display = 'flex';
+    }
+
+    function closePopup() {
+      document.getElementById('node-popup').style.display = 'none';
+    }
+
+    // Left Inspector
+    function renderInspector(data) {
+      const panel = document.getElementById('inspector-panel');
+      const rootNode = data.nodes.find(n => n.id === data.root_id) || data.nodes[0];
+
+      let html = `
+        <div class="summary-card">
+          <div class="summary-title">
+            <span>RETRIEVED ROOT</span>
+            <span class="badge-pill badge-${rootNode.layer.toLowerCase()}">${rootNode.type}</span>
+          </div>
+          <div class="node-title-lg">${rootNode.name}</div>
+          <div class="node-subtext">${rootNode.file} : line ${rootNode.line}</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-title">
+            <span>N-HOP NEIGHBORS</span>
+            <span style="font-family:ui-monospace;">${data.total_nodes} NODES / ${data.total_edges} EDGES</span>
+          </div>
+
+          <table class="hop-table">
+            <thead>
+              <tr>
+                <th>Hop</th>
+                <th>Symbol</th>
+                <th>Type</th>
+                <th>Layer</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.nodes.filter(n => n.hop > 0).map(n => `
+                <tr onclick="showNodePopup('${n.id}'); document.getElementById('query-input').value='${n.id}'; executeQuery();">
+                  <td style="color:${n.hop===1?'#0284c7':'#6366f1'}; font-weight:600;">H${n.hop}</td>
+                  <td style="color:var(--text-main);">${n.name}</td>
+                  <td style="color:var(--text-muted);">${n.type}</td>
+                  <td><span class="badge-pill badge-${n.layer.toLowerCase()}">${n.layer}</span></td>
+                </tr>
+              `).join('') || '<tr><td colspan="4" style="color:var(--text-muted); text-align:center;">No neighbors found</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      panel.innerHTML = html;
+    }
+
+    function renderError(msg) {
+      const panel = document.getElementById('inspector-panel');
+      panel.innerHTML = `
+        <div class="summary-card" style="border-color:#e11d48;">
+          <div class="summary-title" style="color:#e11d48;">QUERY ERROR</div>
+          <div style="font-size:12px; color:var(--text-main);">${escapeHtml(msg)}</div>
+        </div>
+      `;
+      document.getElementById('status-display').innerText = "Error: " + msg;
+    }
+
+    function resetView() {
+      closePopup();
+      const nodeUpdates = rawNodes.map(n => ({
+        id: n.id,
+        hidden: false,
+        shape: 'dot',
+        color: n.color,
+        size: n.size,
+        font: { color: '#1e293b', size: 11 },
+        opacity: 1.0
+      }));
+      const edgeUpdates = rawEdges.map(e => ({
+        id: e.id,
+        hidden: false,
+        width: 0.8,
+        color: e.color,
+        opacity: 1.0
+      }));
+      nodesDataSet.update(nodeUpdates);
+      edgesDataSet.update(edgeUpdates);
+      network.fit({ animation: { duration: 500 } });
+      document.getElementById('status-display').innerText = `Reset: Viewing full graph (${rawNodes.length} nodes)`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    window.onload = initGraph;
+  </script>
+</body>
+</html>

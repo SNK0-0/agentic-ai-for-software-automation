@@ -1,0 +1,16 @@
+{
+  "repo": "pluggy",
+  "pytest": "144 passed in 1.68s",
+  "loc": 5700,
+  "static_internal_call_edges": 892,
+  "dynamic_call_edges": 880,
+  "executed_callers": 301,
+  "edge_recall": 0.4261,
+  "edge_precision_lower_bound": 0.4635,
+  "ambiguous_dynamic_calls": 322,
+  "disambiguation_accuracy": 0.0217,
+  "disambiguation_attempted_pct": 0.0311,
+  "multihop2_precision": 0.7201,
+  "multihop2_recall": 0.4708,
+  "multihop2_f1": 0.5693
+}

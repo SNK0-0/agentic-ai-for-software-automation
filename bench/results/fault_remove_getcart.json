@@ -1,0 +1,31 @@
+{
+  "fault": "remove-rpc",
+  "service": "CartService",
+  "rpc": "GetCart",
+  "proto_files_mutated": [
+    "src/paymentservice/proto/demo.proto",
+    "src/currencyservice/proto/demo.proto",
+    "src/cartservice/src/protos/Cart.proto",
+    "src/adservice/src/main/proto/demo.proto",
+    "protos/demo.proto"
+  ],
+  "bindings_before": 39,
+  "bindings_after": 37,
+  "bindings_lost": 2,
+  "detected": true,
+  "blast_radius": {
+    "dangling_consumers": [
+      "src/checkoutservice/main.go:checkoutService.getUserCart",
+      "src/frontend/rpc.go:frontendServer.getCart"
+    ],
+    "dangling_producers": [],
+    "services_affected": [
+      "checkoutservice",
+      "frontend"
+    ]
+  },
+  "lost_edges": [
+    "CONSUMES: src/checkoutservice/main.go:checkoutService.getUserCart -> contract::CartService.GetCart",
+    "CONSUMES: src/frontend/rpc.go:frontendServer.getCart -> contract::CartService.GetCart"
+  ]
+}

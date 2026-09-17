@@ -1,0 +1,12 @@
+syntax = "proto3";
+package shop;
+
+message Empty {}
+message Quote { int32 cost = 1; }
+message ShipReq { string id = 1; }
+message ShipResp { string tracking = 1; }
+
+service ShippingService {
+    rpc GetQuote(Empty) returns (Quote) {}
+    rpc ShipOrder(ShipReq) returns (ShipResp) {}
+}

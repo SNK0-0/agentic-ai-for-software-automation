@@ -1,0 +1,16 @@
+{
+  "repo": "click",
+  "pytest": "2059 passed, 24 skipped, 31000 deselected, 1 xfailed in 21.37s",
+  "loc": 29121,
+  "static_internal_call_edges": 876,
+  "dynamic_call_edges": 4026,
+  "executed_callers": 1104,
+  "edge_recall": 0.1324,
+  "edge_precision_lower_bound": 0.7475,
+  "ambiguous_dynamic_calls": 2591,
+  "disambiguation_accuracy": 0.0324,
+  "disambiguation_attempted_pct": 0.0575,
+  "multihop2_precision": 0.7366,
+  "multihop2_recall": 0.0635,
+  "multihop2_f1": 0.1169
+}

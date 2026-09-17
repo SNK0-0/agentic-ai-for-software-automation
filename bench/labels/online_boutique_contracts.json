@@ -1,0 +1,38 @@
+{
+  "repo": "online-boutique",
+  "description": "Hand-labelled gRPC producer/consumer ground truth for Google Online Boutique (hipster-shop). Labels derived from protos/demo.proto and service source inspection.",
+  "producers": [
+    {"service": "CartService", "impl_file": "src/cartservice", "lang": "csharp", "note": "C# - not parsed by engine"},
+    {"service": "CheckoutService", "impl_symbol": "checkoutService", "impl_file": "src/checkoutservice/main.go", "lang": "go", "rpcs": ["PlaceOrder"]},
+    {"service": "CurrencyService", "impl_file": "src/currencyservice/server.js", "lang": "js", "rpcs": ["GetSupportedCurrencies", "Convert"]},
+    {"service": "EmailService", "impl_symbol": "BaseEmailService", "impl_file": "src/emailservice/email_server.py", "lang": "python", "rpcs": ["SendOrderConfirmation"]},
+    {"service": "PaymentService", "impl_file": "src/paymentservice/server.js", "lang": "js", "rpcs": ["Charge"]},
+    {"service": "ProductCatalogService", "impl_symbol": "productCatalog", "impl_file": "src/productcatalogservice/product_catalog.go", "lang": "go", "rpcs": ["ListProducts", "GetProduct", "SearchProducts"]},
+    {"service": "RecommendationService", "impl_symbol": "RecommendationService", "impl_file": "src/recommendationservice/recommendation_server.py", "lang": "python", "rpcs": ["ListRecommendations"]},
+    {"service": "ShippingService", "impl_symbol": "server", "impl_file": "src/shippingservice/main.go", "lang": "go", "rpcs": ["GetQuote", "ShipOrder"]},
+    {"service": "AdService", "impl_file": "src/adservice", "lang": "java", "note": "Java - not parsed by engine"}
+  ],
+  "consumers": [
+    {"consumer": "src/frontend/rpc.go:frontendServer.getCart", "service": "CartService", "rpc": "GetCart"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.emptyCart", "service": "CartService", "rpc": "EmptyCart"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.insertCart", "service": "CartService", "rpc": "AddItem"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getCurrencies", "service": "CurrencyService", "rpc": "GetSupportedCurrencies"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.convertCurrency", "service": "CurrencyService", "rpc": "Convert"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getProducts", "service": "ProductCatalogService", "rpc": "ListProducts"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getProduct", "service": "ProductCatalogService", "rpc": "GetProduct"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getShippingQuote", "service": "ShippingService", "rpc": "GetQuote"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getRecommendations", "service": "RecommendationService", "rpc": "ListRecommendations"},
+    {"consumer": "src/frontend/rpc.go:frontendServer.getAd", "service": "AdService", "rpc": "GetAds"},
+    {"consumer": "src/frontend/handlers.go:frontendServer.placeOrderHandler", "service": "CheckoutService", "rpc": "PlaceOrder"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.getUserCart", "service": "CartService", "rpc": "GetCart"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.emptyUserCart", "service": "CartService", "rpc": "EmptyCart"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.prepOrderItems", "service": "ProductCatalogService", "rpc": "GetProduct"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.convertCurrency", "service": "CurrencyService", "rpc": "Convert"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.chargeCard", "service": "PaymentService", "rpc": "Charge"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.sendOrderConfirmation", "service": "EmailService", "rpc": "SendOrderConfirmation"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.shipOrder", "service": "ShippingService", "rpc": "ShipOrder"},
+    {"consumer": "src/checkoutservice/main.go:checkoutService.quoteShipping", "service": "ShippingService", "rpc": "GetQuote"},
+    {"consumer": "src/recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations", "service": "ProductCatalogService", "rpc": "ListProducts"},
+    {"consumer": "src/emailservice/email_client.py:send_confirmation_email", "service": "EmailService", "rpc": "SendOrderConfirmation"}
+  ]
+}

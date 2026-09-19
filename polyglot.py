@@ -45,6 +45,39 @@ class TreeSitterExtractor:
     def _line(node):
         return node.start_point.row + 1
 
+    @staticmethod
+    def _extract_doc_comment(node, source):
+        """Extract preceding JSDoc (/** ... */) or Go (// ...) doc comments."""
+        def get_comment_node(n):
+            curr = n.prev_sibling
+            while curr and curr.type in {"comment", "line_comment", "block_comment"}:
+                return curr
+            if n.parent and n.parent.type in {
+                "export_statement", "lexical_declaration", "variable_declaration", "variable_declarator"
+            }:
+                return get_comment_node(n.parent)
+            return None
+
+        c_node = get_comment_node(node)
+        if not c_node:
+            return None
+
+        comments = []
+        curr = c_node
+        while curr and curr.type in {"comment", "line_comment", "block_comment"}:
+            raw_c = source[curr.start_byte:curr.end_byte].decode("utf-8", errors="replace").strip()
+            comments.insert(0, raw_c)
+            curr = curr.prev_sibling
+
+        if not comments:
+            return None
+
+        full_comment = "\n".join(comments)
+        cleaned = re.sub(r"^/\*\*|\*/$", "", full_comment)
+        cleaned = re.sub(r"(?m)^\s*\*\s?", "", cleaned)
+        cleaned = re.sub(r"(?m)^\s*//\s?", "", cleaned)
+        return cleaned.strip() or None
+
     def extract(self, builder, rel_path, full_path):
         with open(full_path, "rb") as source_file:
             source = source_file.read()
@@ -144,6 +177,10 @@ class TreeSitterExtractor:
                 class_id = builder.get_node_id(name)
                 builder.add_ckg_node(class_id, "class", "Lsyn", name, self._line(node))
                 builder.register_symbol(class_id, name)
+                docstring = self._extract_doc_comment(node, source)
+                if docstring:
+                    builder.docstrings[class_id] = docstring
+                    builder.graph.nodes[class_id]["docstring"] = docstring
                 builder.add_ckg_edge(builder.get_current_scope_id(), class_id, "CONTAINS", "Lsyn")
                 heritage = next((c for c in node.named_children if c.type == "class_heritage"), None)
                 if heritage:
@@ -165,6 +202,10 @@ class TreeSitterExtractor:
                 node_id = builder.get_node_id(name)
                 builder.add_ckg_node(node_id, type_kind, "Lsyn", name, self._line(node))
                 builder.register_symbol(node_id, name)
+                docstring = self._extract_doc_comment(node, source)
+                if docstring:
+                    builder.docstrings[node_id] = docstring
+                    builder.graph.nodes[node_id]["docstring"] = docstring
                 builder.add_ckg_edge(builder.get_current_scope_id(), node_id, "CONTAINS", "Lsyn")
                 self._with_scope(builder, name, lambda: self._visit_children(builder, node, source))
                 return
@@ -209,37 +250,51 @@ class TreeSitterExtractor:
                         (scope_id, target_name, builder.scope_depth, builder.current_file)
                     )
 
-        if node.type == "call_expression" and builder.current_scope:
+        if node.type == "call_expression":
             function = node.child_by_field_name("function")
             if function:
                 raw_callee = self._text(function, source)
-                if self.is_go:
-                    self._go_call(builder, node, raw_callee, source)
-                else:
-                    http_call = self._literal_http_call(node, raw_callee, source)
-                    if http_call:
-                        path, method = http_call
-                        builder.http_calls_to_resolve.append(
-                            (builder.get_current_scope_id(), path, method, builder.current_file)
-                        )
-                    callee = raw_callee.replace("this.", "self.")
-                    if callee.startswith("super."):
-                        callee = "super()." + callee[len("super."):]
-                    builder.calls_to_resolve.append(
-                        (builder.get_current_scope_id(), callee, builder.scope_depth, builder.current_file)
-                    )
-                    # JS gRPC client call: client.getQuote(...)
-                    if "." in raw_callee:
-                        var_name, _, method = raw_callee.partition(".")
-                        service = builder.grpc_client_vars.get(builder.current_file, {}).get(var_name)
-                        if service:
-                            builder.grpc_calls_to_resolve.append(
-                                (builder.get_current_scope_id(), service, method, builder.current_file)
+                # Express route registration: app.get("/path", handler)
+                express_match = re.match(r"^(?:app|router)\.(get|post|put|delete|patch)$", raw_callee)
+                if express_match:
+                    method = express_match.group(1).upper()
+                    arguments = node.child_by_field_name("arguments")
+                    if arguments and len(arguments.named_children) >= 2:
+                        path_str = self._text(arguments.named_children[0], source).strip("'\"")
+                        if path_str.startswith("/"):
+                            h_node = arguments.named_children[1]
+                            h_name = self._text(h_node, source)
+                            h_id = builder.get_node_id(h_name) if h_node.type == "identifier" else builder.get_current_scope_id()
+                            builder.http_endpoints.setdefault((method, path_str), []).append(h_id)
+
+                if builder.current_scope:
+                    if self.is_go:
+                        self._go_call(builder, node, raw_callee, source)
+                    else:
+                        http_call = self._literal_http_call(node, raw_callee, source)
+                        if http_call:
+                            path, method = http_call
+                            builder.http_calls_to_resolve.append(
+                                (builder.get_current_scope_id(), path, method, builder.current_file)
                             )
-                    # JS gRPC server: server.addService(proto.XService.service, {rpc: handler})
-                    add_service = re.match(r"^(?:\w+\.)*addService$", raw_callee)
-                    if add_service:
-                        self._js_add_service(builder, node, source)
+                        callee = raw_callee.replace("this.", "self.")
+                        if callee.startswith("super."):
+                            callee = "super()." + callee[len("super."):]
+                        builder.calls_to_resolve.append(
+                            (builder.get_current_scope_id(), callee, builder.scope_depth, builder.current_file)
+                        )
+                        # JS gRPC client call: client.getQuote(...)
+                        if "." in raw_callee:
+                            var_name, _, method = raw_callee.partition(".")
+                            service = builder.grpc_client_vars.get(builder.current_file, {}).get(var_name)
+                            if service:
+                                builder.grpc_calls_to_resolve.append(
+                                    (builder.get_current_scope_id(), service, method, builder.current_file)
+                                )
+                        # JS gRPC server: server.addService(proto.XService.service, {rpc: handler})
+                        add_service = re.match(r"^(?:\w+\.)*addService$", raw_callee)
+                        if add_service:
+                            self._js_add_service(builder, node, source)
 
         if node.type == "return_statement" and builder.current_scope:
             scope_id = builder.get_current_scope_id()
@@ -398,6 +453,10 @@ class TreeSitterExtractor:
             type_id = builder.get_node_id(name)
             builder.add_ckg_node(type_id, "class", "Lsyn", name, self._line(spec))
             builder.register_symbol(type_id, name)
+            docstring = self._extract_doc_comment(spec, source) or self._extract_doc_comment(node, source)
+            if docstring:
+                builder.docstrings[type_id] = docstring
+                builder.graph.nodes[type_id]["docstring"] = docstring
             builder.add_ckg_edge(builder.get_current_scope_id(), type_id, "CONTAINS", "Lsyn")
 
     @staticmethod
@@ -441,6 +500,28 @@ class TreeSitterExtractor:
             builder.grpc_server_registrations.append(
                 (service, impl_arg, builder.current_file, scope_id)
             )
+
+        # HTTP route registration: http.HandleFunc("/path", handler)
+        if raw_callee == "http.HandleFunc":
+            path_arg = self._call_argument_text(node, source, index=0)
+            handler_arg = self._call_argument_text(node, source, index=1)
+            if path_arg and handler_arg:
+                path = path_arg.strip("'\"`")
+                if path.startswith("/"):
+                    h_name = handler_arg.rsplit(".", 1)[-1]
+                    h_id = builder.get_node_id(h_name)
+                    builder.http_endpoints.setdefault(("GET", path), []).append(h_id)
+                    builder.http_endpoints.setdefault(("POST", path), []).append(h_id)
+
+        # Go client HTTP call: http.Get("http://...") or http.Post("...")
+        if raw_callee in ("http.Get", "http.Post"):
+            method = "GET" if raw_callee == "http.Get" else "POST"
+            url_arg = self._call_argument_text(node, source, index=0)
+            if url_arg:
+                path_match = re.match(r"['\"`](?:https?://[^/'\"`]+)?(/[^'\"`]+)['\"`]", url_arg)
+                if path_match:
+                    path = path_match.group(1)
+                    builder.http_calls_to_resolve.append((scope_id, path, method, builder.current_file))
 
         builder.calls_to_resolve.append(
             (scope_id, callee, builder.scope_depth, builder.current_file)
@@ -510,6 +591,10 @@ class TreeSitterExtractor:
         function_id = builder.get_node_id(name)
         builder.add_ckg_node(function_id, "function", "Lsyn", name, self._line(node))
         builder.register_symbol(function_id, name)
+        docstring = self._extract_doc_comment(node, source)
+        if docstring:
+            builder.docstrings[function_id] = docstring
+            builder.graph.nodes[function_id]["docstring"] = docstring
         builder.add_ckg_edge(builder.get_current_scope_id(), function_id, "CONTAINS", "Lsyn")
         builder.var_defs.setdefault(function_id, {})
         parameters = node.child_by_field_name("parameters") or node.child_by_field_name("parameter")

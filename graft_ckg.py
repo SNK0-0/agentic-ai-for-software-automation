@@ -655,6 +655,17 @@ class CKGBuilder(ast.NodeVisitor):
         callee_name = self._node_to_name(node.func)
         if callee_name and self.current_scope:
             caller_id = self.get_current_scope_id()
+            # Python requests HTTP client call: requests.get/post/put/delete/patch("...")
+            if callee_name.startswith("requests.") and callee_name.split(".")[-1] in ("get", "post", "put", "delete", "patch"):
+                method = callee_name.split(".")[-1].upper()
+                if node.args:
+                    paths = self._literal_strings(node.args[0])
+                    if paths:
+                        clean_path = re.sub(r"^https?://[^/]+", "", paths[0])
+                        if clean_path.startswith("/"):
+                            self.http_calls_to_resolve.append(
+                                (caller_id, clean_path, method, self.current_file)
+                            )
             # gRPC client call candidate: <var>.<Method>(...). The stub binding
             # for <var> may appear later in the file (e.g. under __main__), so
             # resolution is deferred to _resolve_contract_layer.

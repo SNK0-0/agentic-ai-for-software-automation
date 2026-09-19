@@ -22,6 +22,7 @@ import re
 import sys
 import json
 import math
+import hashlib
 import argparse
 import networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -49,8 +50,10 @@ class HyperEdgeMetadata:
 
 
 class CKGBuilder(ast.NodeVisitor):
-    def __init__(self, repo_path):
+    def __init__(self, repo_path, repo_id=None):
         self.repo_path = os.path.abspath(repo_path)
+        self.repo_id = repo_id
+        self.repo_prefix = f"{repo_id}/" if repo_id else ""
         self.graph = nx.MultiDiGraph()
         self.current_file = None
         self.current_scope = []
@@ -80,7 +83,8 @@ class CKGBuilder(ast.NodeVisitor):
 
         # Contract Layer (Lcontract): protobuf/gRPC service contracts and
         # producer/consumer bindings across languages.
-        self.proto_services = {}        # service_name -> {"node_id", "rpcs": {rpc -> node_id}}
+        self.proto_services = {}        # service_name -> {"node_id", "rpcs": {rpc -> node_id}, ...}
+        self.proto_file_hashes = {}     # rel_path -> sha256
         self.grpc_calls_to_resolve = [] # (caller_id, service, method, id_ctx)
         self.grpc_client_vars = {}      # file -> {var_name: service_name}
         self.pending_attr_calls = []    # (caller_id, var, method, file) resolved post-parse
@@ -97,17 +101,27 @@ class CKGBuilder(ast.NodeVisitor):
         self.indexed_node_ids = []
         self.bm25_index = None
 
+    @property
+    def current_file_ctx(self):
+        if not self.current_file:
+            return ""
+        return f"{self.repo_prefix}{self.current_file}"
+
+    @property
+    def current_file_node_id(self):
+        return f"file::{self.current_file_ctx}"
+
     def get_current_scope_id(self):
         if not self.current_scope:
-            return f"file::{self.current_file}"
+            return self.current_file_node_id
         scope = ".".join(self.current_scope)
-        return f"{self.current_file}:{scope}"
+        return f"{self.current_file_ctx}:{scope}"
 
     def get_node_id(self, name):
         if not self.current_scope:
-            return f"{self.current_file}:{name}"
+            return f"{self.current_file_ctx}:{name}"
         scope = ".".join(self.current_scope)
-        return f"{self.current_file}:{scope}.{name}"
+        return f"{self.current_file_ctx}:{scope}.{name}"
 
     @staticmethod
     def _module_name_for_file(rel_path):
@@ -242,14 +256,15 @@ class CKGBuilder(ast.NodeVisitor):
                 self.file_symbols[self.current_file] = []
             self.file_symbols[self.current_file].append(node_id)
 
-    def add_ckg_node(self, node_id, node_type, layer="Lsyn", name="", line_no=0, doc="", code=""):
+    def add_ckg_node(self, node_id, node_type, layer="Lsyn", name="", line_no=0, doc="", code="", repo=None):
         self.graph.add_node(
             node_id,
             id=node_id,
             type=node_type,
             layer=layer,
             name=name,
-            file=self.current_file or "",
+            file=self.current_file_ctx,
+            repo=repo if repo is not None else (self.repo_id or ""),
             line_no=line_no,
             docstring=doc,
             code=code,
@@ -259,7 +274,7 @@ class CKGBuilder(ast.NodeVisitor):
 
     def add_ckg_edge(self, u, v, relation, layer, metadata=None):
         if metadata is None:
-            metadata = HyperEdgeMetadata(d_scope=self.scope_depth, id_ctx=self.current_file or "")
+            metadata = HyperEdgeMetadata(d_scope=self.scope_depth, id_ctx=self.current_file_ctx)
         edge_id = f"e{self.edge_counter}"
         self.edge_counter += 1
         self.graph.add_edge(
@@ -320,7 +335,7 @@ class CKGBuilder(ast.NodeVisitor):
             self.raw_file_lines[rel_path] = lines
             self.total_loc += len(lines)
 
-            file_node_id = f"file::{rel_path}"
+            file_node_id = self.current_file_node_id
             self.add_ckg_node(
                 file_node_id,
                 node_type="file",
@@ -483,11 +498,11 @@ class CKGBuilder(ast.NodeVisitor):
             as_name = alias.asname or imported_name.split(".")[0]
             self.imports_by_file[self.current_file][as_name] = imported_name
             # Connect File to imported module in Ldep
-            file_node = f"file::{self.current_file}"
+            file_node = self.current_file_node_id
             mod_target = f"module::{imported_name}"
             if not self.graph.has_node(mod_target):
                 self.add_ckg_node(mod_target, node_type="module", layer="Ldep", name=imported_name)
-            meta = HyperEdgeMetadata(d_scope=0, c_type=1.0, id_ctx=self.current_file)
+            meta = HyperEdgeMetadata(d_scope=0, c_type=1.0, id_ctx=self.current_file_ctx)
             self.add_ckg_edge(file_node, mod_target, relation="IMPORTS", layer="Ldep", metadata=meta)
         self.generic_visit(node)
 
@@ -498,11 +513,11 @@ class CKGBuilder(ast.NodeVisitor):
             as_name = alias.asname or imported_symbol
             full_target = f"{mod}.{imported_symbol}" if mod else imported_symbol
             self.imports_by_file[self.current_file][as_name] = full_target
-            file_node = f"file::{self.current_file}"
+            file_node = self.current_file_node_id
             sym_target = f"symbol::{full_target}"
             if not self.graph.has_node(sym_target):
                 self.add_ckg_node(sym_target, node_type="symbol_ref", layer="Ldep", name=imported_symbol)
-            meta = HyperEdgeMetadata(d_scope=0, c_type=1.0, id_ctx=self.current_file)
+            meta = HyperEdgeMetadata(d_scope=0, c_type=1.0, id_ctx=self.current_file_ctx)
             self.add_ckg_edge(file_node, sym_target, relation="IMPORTS", layer="Ldep", metadata=meta)
         self.generic_visit(node)
 
@@ -518,7 +533,7 @@ class CKGBuilder(ast.NodeVisitor):
         self.register_symbol(class_id, node.name)
         
         # AST Containment Edge
-        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
         self.add_ckg_edge(parent_id, class_id, relation="CONTAINS", layer="Lsyn", metadata=meta)
 
         # Inheritance in Dependency Layer (Ldep)
@@ -563,7 +578,7 @@ class CKGBuilder(ast.NodeVisitor):
         self.register_symbol(func_id, node.name)
 
         # AST Containment Edge (Lsyn)
-        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
         self.add_ckg_edge(parent_id, func_id, relation="CONTAINS", layer="Lsyn", metadata=meta)
 
         # Arguments in Dataflow Layer (Lflow)
@@ -586,7 +601,7 @@ class CKGBuilder(ast.NodeVisitor):
             var_id = f"{func_id}.var::{arg_name}"
             self.add_ckg_node(var_id, node_type="variable", layer="Lflow", name=arg_name, line_no=getattr(arg, 'lineno', node.lineno))
             self.var_defs[func_id][arg_name] = var_id
-            meta_arg = HyperEdgeMetadata(d_scope=self.scope_depth + 1, c_type=1.0, id_ctx=self.current_file)
+            meta_arg = HyperEdgeMetadata(d_scope=self.scope_depth + 1, c_type=1.0, id_ctx=self.current_file_ctx)
             self.add_ckg_edge(func_id, var_id, relation="PASSES_ARG", layer="Lflow", metadata=meta_arg)
             if getattr(arg, "annotation", None):
                 type_name = self._node_to_name(arg.annotation)
@@ -664,16 +679,16 @@ class CKGBuilder(ast.NodeVisitor):
                         clean_path = re.sub(r"^https?://[^/]+", "", paths[0])
                         if clean_path.startswith("/"):
                             self.http_calls_to_resolve.append(
-                                (caller_id, clean_path, method, self.current_file)
+                                (caller_id, clean_path, method, self.current_file_ctx)
                             )
             # gRPC client call candidate: <var>.<Method>(...). The stub binding
             # for <var> may appear later in the file (e.g. under __main__), so
             # resolution is deferred to _resolve_contract_layer.
             if callee_name.count(".") == 1:
                 var, _, method = callee_name.partition(".")
-                self.pending_attr_calls.append((caller_id, var, method, self.current_file))
-                self.recorded_attr_calls.append((caller_id, var, method, self.current_file))
-            self.calls_to_resolve.append((caller_id, callee_name, self.scope_depth, self.current_file))
+                self.pending_attr_calls.append((caller_id, var, method, self.current_file_ctx))
+                self.recorded_attr_calls.append((caller_id, var, method, self.current_file_ctx))
+            self.calls_to_resolve.append((caller_id, callee_name, self.scope_depth, self.current_file_ctx))
         self.generic_visit(node)
 
     def visit_Assign(self, node):
@@ -685,7 +700,7 @@ class CKGBuilder(ast.NodeVisitor):
             if stub_match:
                 for target in node.targets:
                     for var_name, _ in self._extract_target_names(target):
-                        self.grpc_client_vars.setdefault(self.current_file, {})[
+                        self.grpc_client_vars.setdefault(self.current_file_ctx, {})[
                             var_name
                         ] = stub_match.group(1)
         if self.current_scope:
@@ -708,7 +723,7 @@ class CKGBuilder(ast.NodeVisitor):
                     if inferred_type:
                         self.var_types.setdefault(scope_id, {})[var_name] = inferred_type
                     
-                    meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                    meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                     self.add_ckg_edge(scope_id, var_id, relation="DEFINES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -727,7 +742,7 @@ class CKGBuilder(ast.NodeVisitor):
                 if type_name:
                     self.var_types.setdefault(scope_id, {})[var_name] = type_name.rsplit(".", 1)[-1]
                 
-                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                 self.add_ckg_edge(scope_id, var_id, relation="DEFINES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -739,7 +754,7 @@ class CKGBuilder(ast.NodeVisitor):
                 if not self.graph.has_node(var_id):
                     self.add_ckg_node(var_id, node_type="variable", layer="Lflow", name=var_name, line_no=lineno or node.lineno)
                 self.var_defs.setdefault(scope_id, {})[var_name] = var_id
-                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                 self.add_ckg_edge(scope_id, var_id, relation="DEFINES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -753,7 +768,7 @@ class CKGBuilder(ast.NodeVisitor):
                         if not self.graph.has_node(var_id):
                             self.add_ckg_node(var_id, node_type="variable", layer="Lflow", name=var_name, line_no=lineno or node.lineno)
                         self.var_defs.setdefault(scope_id, {})[var_name] = var_id
-                        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                        meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                         self.add_ckg_edge(scope_id, var_id, relation="DEFINES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -763,7 +778,7 @@ class CKGBuilder(ast.NodeVisitor):
             return_id = f"{scope_id}.return::{node.lineno}"
             if not self.graph.has_node(return_id):
                 self.add_ckg_node(return_id, node_type="return", layer="Lflow", name="return", line_no=node.lineno)
-            meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+            meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
             self.add_ckg_edge(scope_id, return_id, relation="RETURNS", layer="Lflow", metadata=meta)
             if node.value and isinstance(node.value, ast.Name):
                 var_name = node.value.id
@@ -779,7 +794,7 @@ class CKGBuilder(ast.NodeVisitor):
                 var_name = node.target.id
                 if scope_id in self.var_defs and var_name in self.var_defs[scope_id]:
                     var_id = self.var_defs[scope_id][var_name]
-                    meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                    meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                     self.add_ckg_edge(scope_id, var_id, relation="MUTATES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -790,7 +805,7 @@ class CKGBuilder(ast.NodeVisitor):
             var_name = node.id
             if scope_id in self.var_defs and var_name in self.var_defs[scope_id]:
                 var_id = self.var_defs[scope_id][var_name]
-                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file)
+                meta = HyperEdgeMetadata(d_scope=self.scope_depth, c_type=1.0, id_ctx=self.current_file_ctx)
                 self.add_ckg_edge(scope_id, var_id, relation="USES", layer="Lflow", metadata=meta)
         self.generic_visit(node)
 
@@ -814,6 +829,7 @@ class CKGBuilder(ast.NodeVisitor):
             if separator:
                 canonical = f"{canonical}.{remainder}"
 
+        prefix = self.repo_prefix
         module_name, dot, symbol_name = canonical.rpartition(".")
         if dot:
             target_file = self.module_to_file.get(module_name)
@@ -821,7 +837,7 @@ class CKGBuilder(ast.NodeVisitor):
                 candidates = [
                     node_id
                     for node_id in self.symbols_by_name.get(symbol_name, [])
-                    if node_id.startswith(f"{target_file}:")
+                    if node_id.startswith(f"{prefix}{target_file}:")
                 ]
                 if candidates:
                     return candidates
@@ -833,7 +849,7 @@ class CKGBuilder(ast.NodeVisitor):
             same_file = [
                 node_id
                 for node_id in self.symbols_by_name.get(spelling, [])
-                if node_id.startswith(f"{caller_file}:")
+                if node_id.startswith(f"{prefix}{caller_file}:")
             ]
             if same_file:
                 return same_file
@@ -1045,7 +1061,7 @@ class CKGBuilder(ast.NodeVisitor):
                 continue
             candidates = [
                 nid for nid in self.symbols_by_name.get(method, [])
-                if nid.startswith(f"{target_file}:")
+                if nid.startswith(f"{self.repo_prefix}{target_file}:")
                 and self.graph.nodes[nid].get("type") == "function"
             ]
             if len(candidates) == 1:
@@ -1087,13 +1103,17 @@ class CKGBuilder(ast.NodeVisitor):
     # -------------------------------------------------------------
     def _parse_proto_file(self, rel_path, full_path):
         """Parse a .proto file into canonical service/rpc contract nodes."""
-        with open(full_path, "r", encoding="utf-8", errors="replace") as f:
-            text = f.read()
+        with open(full_path, "rb") as f:
+            raw_bytes = f.read()
+        proto_hash = hashlib.sha256(raw_bytes).hexdigest()
+        self.proto_file_hashes[rel_path] = proto_hash
+
+        text = raw_bytes.decode("utf-8", errors="replace")
         text = re.sub(r"//[^\n]*", "", text)
         text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
-        file_id = f"file::{rel_path}"
+        file_id = f"file::{self.repo_prefix}{rel_path}"
         self.add_ckg_node(file_id, "file", "Lsyn", os.path.basename(rel_path), 1,
-                          code=f"// Proto contract file: {rel_path}")
+                          code=f"// Proto contract file: {rel_path}", repo=self.repo_id or "")
         # Normalise empty rpc option blocks `{}` so service bodies can be
         # delimited by brace balancing (the first `}` is NOT the service end).
         text = re.sub(r"\)\s*\{\s*\}", ");", text)
@@ -1105,18 +1125,44 @@ class CKGBuilder(ast.NodeVisitor):
                 i += 1
             body = text[service_match.end():i - 1]
             service_id = f"contract::{service_name}"
-            self.add_ckg_node(service_id, "service_contract", "Lcontract", service_name)
+            if not self.graph.has_node(service_id):
+                self.add_ckg_node(service_id, "service_contract", "Lcontract", service_name)
+            self.graph.nodes[service_id].setdefault("definitions", []).append({
+                "file": rel_path,
+                "file_id": file_id,
+                "repo_id": self.repo_id or "",
+                "sha256": proto_hash,
+            })
             self.add_ckg_edge(file_id, service_id, "CONTAINS", "Lsyn")
             rpcs = {}
+            rpc_signatures = {}
             for rpc_match in re.finditer(r"rpc\s+(\w+)\s*\(\s*(\w+)\s*\)\s*returns\s*\(\s*(\w+)\s*\)", body):
                 rpc_name, req_type, resp_type = rpc_match.groups()
                 rpc_id = f"contract::{service_name}.{rpc_name}"
-                self.add_ckg_node(rpc_id, "rpc_contract", "Lcontract", rpc_name)
+                if not self.graph.has_node(rpc_id):
+                    self.add_ckg_node(rpc_id, "rpc_contract", "Lcontract", rpc_name)
                 self.graph.nodes[rpc_id]["request_type"] = req_type
                 self.graph.nodes[rpc_id]["response_type"] = resp_type
+                self.graph.nodes[rpc_id].setdefault("definitions", []).append({
+                    "file": rel_path,
+                    "file_id": file_id,
+                    "repo_id": self.repo_id or "",
+                    "sha256": proto_hash,
+                    "request_type": req_type,
+                    "response_type": resp_type,
+                })
                 self.add_ckg_edge(service_id, rpc_id, "DEFINES_RPC", "Lcontract")
                 rpcs[rpc_name] = rpc_id
-            self.proto_services[service_name] = {"node_id": service_id, "rpcs": rpcs}
+                rpc_signatures[rpc_name] = {"request": req_type, "response": resp_type}
+            self.proto_services[service_name] = {
+                "node_id": service_id,
+                "rpcs": rpcs,
+                "file": rel_path,
+                "file_id": file_id,
+                "repo_id": self.repo_id or "",
+                "sha256": proto_hash,
+                "signatures": rpc_signatures,
+            }
 
     def _resolve_contract_layer(self):
         """Bind producers (IMPLEMENTS) and consumers (CONSUMES) to contracts."""
@@ -1161,7 +1207,7 @@ class CKGBuilder(ast.NodeVisitor):
             # Resolve impl variable to its concrete type (svc := new(checkoutService))
             impl_type = self.go_type_vars.get(file, {}).get(impl_type, impl_type)
             # The type may be declared in a different file of the same package.
-            impl_id = f"{file}:{impl_type}"
+            impl_id = f"{self.repo_prefix}{file}:{impl_type}"
             if impl_id not in self.graph:
                 candidates = [nid for nid in self.symbols_by_name.get(impl_type, [])
                               if self.graph.nodes[nid].get("type") == "class"]
@@ -1694,7 +1740,8 @@ class CKGBuilder(ast.NodeVisitor):
 # -------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(description="GRAFT-CKG: 4-Layer Code Knowledge Graph Engine")
-    parser.add_argument("repo_path", help="Path to Python repository")
+    parser.add_argument("repo_path", nargs="?", default=None, help="Path to repository")
+    parser.add_argument("--workspace", help="Path to workspace.yaml or workspace.json manifest for multi-repo analysis")
     parser.add_argument("--interactive", action="store_true", help="Launch interactive query REPL")
     parser.add_argument("--verify", action="store_true", help="Run graph integrity and layer completeness verification")
     parser.add_argument("--explain", help="Node ID or symbol name to explain across all 4 layers")
@@ -1706,8 +1753,15 @@ def main():
     parser.add_argument("--export", default="repo_graph.graphml", help="Export path for GraphML")
     args = parser.parse_args()
 
-    builder = CKGBuilder(args.repo_path)
-    builder.build()
+    if args.workspace:
+        from multi_repo import WorkspaceCKGBuilder
+        builder = WorkspaceCKGBuilder(args.workspace)
+        builder.build()
+    elif args.repo_path:
+        builder = CKGBuilder(args.repo_path)
+        builder.build()
+    else:
+        parser.error("Either repo_path or --workspace must be provided.")
 
     if args.verify:
         v_report = builder.verify_graph()
@@ -1751,9 +1805,14 @@ def main():
         if export_dir:
             os.makedirs(export_dir, exist_ok=True)
         export_g = builder.graph.copy()
+        for _, data in export_g.nodes(data=True):
+            for k, v in list(data.items()):
+                if isinstance(v, (list, dict)):
+                    data[k] = json.dumps(v)
         for _, _, data in export_g.edges(data=True):
-            if "metadata" in data and isinstance(data["metadata"], dict):
-                data["metadata"] = json.dumps(data["metadata"])
+            for k, v in list(data.items()):
+                if isinstance(v, (list, dict)):
+                    data[k] = json.dumps(v)
         
         # 1. Export GraphML (with globally unique edge IDs)
         nx.write_graphml(export_g, args.export)

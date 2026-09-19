@@ -37,15 +37,25 @@ class DefectType:
     REMOVED_RPC = "REMOVED_RPC_SKEW"
     MISSING_IMPLEMENTATION = "MISSING_SERVICE_IMPLEMENTATION"
     DANGLING_HTTP_ENDPOINT = "DANGLING_HTTP_ENDPOINT"
+    CONTRACT_SKEW = "CONTRACT_SKEW"
 
 
 class SCKGSelfHealingEngine:
     """5-Stage Closed-Loop Automated Remediation Engine."""
 
-    def __init__(self, repo_path: str):
-        self.repo_path = os.path.abspath(repo_path)
-        self.builder = CKGBuilder(self.repo_path)
-        self.builder.build()
+    def __init__(self, repo_or_builder: Any):
+        if isinstance(repo_or_builder, str):
+            self.repo_path = os.path.abspath(repo_or_builder)
+            if repo_or_builder.endswith((".yaml", ".yml", ".json")) or (os.path.isfile(repo_or_builder) and "workspace" in repo_or_builder):
+                from multi_repo import WorkspaceCKGBuilder
+                self.builder = WorkspaceCKGBuilder(self.repo_path)
+                self.builder.build()
+            else:
+                self.builder = CKGBuilder(self.repo_path)
+                self.builder.build()
+        else:
+            self.builder = repo_or_builder
+            self.repo_path = getattr(self.builder, "repo_path", "")
         self.traversal = SCKGTraversal(self.builder)
 
     # -------------------------------------------------------------------------
@@ -61,8 +71,23 @@ class SCKGSelfHealingEngine:
           2. Dangling client calls: e.g. stub.Method() where Method is not in service_contract.
           3. Missing producers: RPCs defined in contract with 0 IMPLEMENTS edges.
           4. Dangling HTTP calls: fetch('/api/foo') where no backend route matches.
+          5. Multi-repo contract schema skew: divergent .proto versions across microservice repos.
         """
         defects: List[Dict[str, Any]] = []
+
+        # 0. Check for multi-repo contract schema skew
+        if hasattr(self.builder, "contract_skews") and self.builder.contract_skews:
+            for skew in self.builder.contract_skews:
+                defects.append({
+                    "type": DefectType.CONTRACT_SKEW,
+                    "severity": "CRITICAL",
+                    "service": skew.get("service"),
+                    "contract_node": skew.get("contract_node"),
+                    "versions": skew.get("versions"),
+                    "files": skew.get("files"),
+                    "details": skew.get("details"),
+                    "message": skew.get("message"),
+                })
 
         # 1. Inspect all proto service contracts
         for service_name, s_info in self.builder.proto_services.items():
@@ -464,14 +489,19 @@ def main():
     parser = argparse.ArgumentParser(
         description="SCKG Self-Healing & Automated Code-Level Remediation Engine"
     )
-    parser.add_argument("--repo", required=True, help="Path to repository")
+    parser.add_argument("--repo", help="Path to repository")
+    parser.add_argument("--workspace", help="Path to workspace.yaml or workspace.json manifest")
     parser.add_argument("--diagnose", action="store_true", help="Diagnose contract skews and inconsistencies")
     parser.add_argument("--auto-fix", action="store_true", help="Run 5-stage closed loop remediation")
     parser.add_argument("--apply", action="store_true", help="Apply synthesized patches directly to disk")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     args = parser.parse_args()
 
-    engine = SCKGSelfHealingEngine(args.repo)
+    target = args.workspace or args.repo
+    if not target:
+        parser.error("Either --repo or --workspace must be provided.")
+
+    engine = SCKGSelfHealingEngine(target)
 
     if args.diagnose:
         defects = engine.diagnose()

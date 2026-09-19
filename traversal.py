@@ -29,8 +29,13 @@ class SCKGTraversal:
 
     def __init__(self, builder_or_path):
         if isinstance(builder_or_path, str):
-            self.builder = CKGBuilder(builder_or_path)
-            self.builder.build()
+            if builder_or_path.endswith((".yaml", ".yml", ".json")) or (os.path.isfile(builder_or_path) and "workspace" in builder_or_path):
+                from multi_repo import WorkspaceCKGBuilder
+                self.builder = WorkspaceCKGBuilder(builder_or_path)
+                self.builder.build()
+            else:
+                self.builder = CKGBuilder(builder_or_path)
+                self.builder.build()
         else:
             self.builder = builder_or_path
         self.graph: nx.MultiDiGraph = self.builder.graph
@@ -294,41 +299,58 @@ class SCKGTraversal:
         if not root:
             return {"error": f"Symbol '{symbol_or_node}' not found."}
 
-        allowed_layers = set(layers) if layers else {"Lsyn", "Ldep", "Lflow", "Lcontract"}
+        allowed_layers = set(layers) if layers else {"Lsyn", "Ldep", "Lflow", "Lsem", "Lcontract"}
         selected_nodes: Set[str] = {root}
         selected_edges: List[Dict[str, Any]] = []
 
-        # 1. Capture outgoing dependencies (callees, contracts, mutations)
-        for _, tgt, data in self.graph.out_edges(root, data=True):
-            l = data.get("layer")
-            rel = data.get("relation")
-            if l in allowed_layers and rel in (
-                "CALLS", "POLYMORPHIC_CALL", "CONSUMES", "IMPLEMENTS",
-                "EXTENDS", "MUTATES", "RETURNS", "HTTP_CALLS",
-            ):
-                selected_nodes.add(tgt)
-                selected_edges.append({
-                    "source": root,
-                    "target": tgt,
-                    "relation": rel,
-                    "layer": l,
-                    "confidence": data.get("metadata", {}).get("c_type", 1.0)
-                    if isinstance(data.get("metadata"), dict)
-                    else 1.0,
-                })
+        # Multi-hop deterministic traversal (depth 2 as per Fig 2 in paper)
+        queue = [(root, 0)]
+        visited_in_queue = {root}
 
-        # 2. Capture incoming contract bindings or containment
-        for src, _, data in self.graph.in_edges(root, data=True):
-            l = data.get("layer")
-            rel = data.get("relation")
-            if rel in ("IMPLEMENTS", "CONTAINS") and l in allowed_layers:
-                selected_nodes.add(src)
-                selected_edges.append({
-                    "source": src,
-                    "target": root,
-                    "relation": rel,
-                    "layer": l,
-                })
+        while queue:
+            curr, depth = queue.pop(0)
+            if depth >= 2:
+                continue
+
+            # 1. Outgoing dependencies (callees, contracts, mutations, semantic links)
+            for _, tgt, data in self.graph.out_edges(curr, data=True):
+                l = data.get("layer")
+                rel = data.get("relation")
+                if l in allowed_layers and rel in (
+                    "CALLS", "POLYMORPHIC_CALL", "CONSUMES", "IMPLEMENTS",
+                    "EXTENDS", "MUTATES", "RETURNS", "HTTP_CALLS", "SEMANTIC_SIMILAR", "DEFINES_RPC"
+                ):
+                    selected_nodes.add(tgt)
+                    selected_edges.append({
+                        "source": curr,
+                        "target": tgt,
+                        "relation": rel,
+                        "layer": l,
+                        "confidence": data.get("metadata", {}).get("c_type", 1.0)
+                        if isinstance(data.get("metadata"), dict)
+                        else 1.0,
+                    })
+                    if tgt not in visited_in_queue:
+                        visited_in_queue.add(tgt)
+                        queue.append((tgt, depth + 1))
+
+            # 2. Incoming contract bindings, consumers, or containment
+            for src, _, data in self.graph.in_edges(curr, data=True):
+                l = data.get("layer")
+                rel = data.get("relation")
+                if l in allowed_layers and rel in (
+                    "IMPLEMENTS", "CONSUMES", "CONTAINS", "DEFINES_RPC", "SEMANTIC_SIMILAR", "CALLS"
+                ):
+                    selected_nodes.add(src)
+                    selected_edges.append({
+                        "source": src,
+                        "target": curr,
+                        "relation": rel,
+                        "layer": l,
+                    })
+                    if src not in visited_in_queue:
+                        visited_in_queue.add(src)
+                        queue.append((src, depth + 1))
 
         # 3. Assemble and budget context snippets
         approx_token_count = 0
@@ -371,6 +393,7 @@ class SCKGTraversal:
 
         return {
             "root": root,
+            "selected_nodes": list(selected_nodes),
             "node_count": len(selected_nodes),
             "edge_count": len(selected_edges),
             "approx_tokens": int(approx_token_count),
@@ -414,8 +437,12 @@ class SCKGTraversal:
                     return node
         return None
 
-    def _extract_service_name(self, file_path: str) -> str:
-        """Derives microservice name from directory path structure."""
+    def _extract_service_name(self, file_path: str, node_id: str = "") -> str:
+        """Derives microservice name from node metadata or directory path structure."""
+        if node_id and self.graph.has_node(node_id):
+            repo = self.graph.nodes[node_id].get("repo")
+            if repo:
+                return repo
         if not file_path:
             return ""
         norm = file_path.replace("\\", "/")
@@ -438,7 +465,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="SCKG Traversal & Context Subtree Grafting Engine"
     )
-    parser.add_argument("--repo", required=True, help="Path to repository")
+    parser.add_argument("--repo", help="Path to repository")
+    parser.add_argument("--workspace", help="Path to workspace.yaml or workspace.json manifest")
     parser.add_argument("--blast-radius", dest="blast_radius", help="Symbol or node for blast radius calculation")
     parser.add_argument("--depth", type=int, default=2, help="Max depth for blast radius traversal")
     parser.add_argument("--direction", choices=["downstream", "upstream", "both"], default="both", help="Traversal direction")
@@ -449,7 +477,11 @@ def main():
     parser.add_argument("--json", action="store_true", help="Print output as JSON")
     args = parser.parse_args()
 
-    traversal = SCKGTraversal(args.repo)
+    target = args.workspace or args.repo
+    if not target:
+        parser.error("Either --repo or --workspace must be provided.")
+
+    traversal = SCKGTraversal(target)
 
     if args.blast_radius:
         res = traversal.blast_radius(args.blast_radius, max_depth=args.depth, direction=args.direction)

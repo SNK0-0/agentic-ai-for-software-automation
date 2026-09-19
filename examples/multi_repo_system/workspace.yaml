@@ -1,0 +1,17 @@
+name: "enterprise_multi_repo"
+version: "1.0.0"
+repositories:
+  - id: "order_service"
+    path: "./services/order_service"
+    language: "python"
+    role: "Order processing backend & gRPC client"
+  - id: "shipping_service"
+    path: "./services/shipping_service"
+    language: "go"
+    role: "Shipping calculation service implementing gRPC"
+  - id: "web_frontend"
+    path: "./services/web_frontend"
+    language: "typescript"
+    role: "React/Next.js checkout frontend"
+shared_contracts:
+  - "./contracts/protos"

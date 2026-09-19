@@ -88,7 +88,7 @@ class TreeSitterExtractor:
         builder.imports_by_file[rel_path] = {}
         builder.raw_file_lines[rel_path] = text.splitlines()
         builder.total_loc += len(builder.raw_file_lines[rel_path])
-        file_id = f"file::{rel_path}"
+        file_id = getattr(builder, "current_file_node_id", f"file::{rel_path}")
         builder.add_ckg_node(
             file_id, "file", "Lsyn", os.path.basename(rel_path), 1,
             code=f"// File: {rel_path}\n// Lines: {len(builder.raw_file_lines[rel_path])}",

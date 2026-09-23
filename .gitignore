@@ -6,6 +6,11 @@ __pycache__/
 # Caches and serialized graphs
 *.pickle
 *.pkl
+*.graphml
+*.gexf
+repo_graph.*
+*.cypher
+*.log
 .cache/
 .pytest_cache/
 

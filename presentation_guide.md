@@ -82,7 +82,7 @@ python graft_ckg.py requests_repo --adjacency "requests/sessions.py:Session.send
 
 ## 4. Benchmark & Evaluation Results (Table I & Table II Replication)
 
-We ran the automated evaluation suite ([`eval_ckg.py`](file:///C:/Users/krish/.gemini/antigravity/scratch/eval_ckg.py)) across real SWE-bench repositories. Here is the comparative evaluation scorecard:
+We ran the automated evaluation suite ([`eval_ckg.py`](eval_ckg.py)) across real SWE-bench repositories. Here is the comparative evaluation scorecard:
 
 ### Graph Construction & Completeness (Paper Table I)
 
@@ -111,7 +111,7 @@ When presenting to your scholar, run these 4 simple steps in your terminal:
 
 ### Step 1: Show Real-Time Graph Construction & Layer Balance
 ```powershell
-cd C:\Users\krish\.gemini\antigravity\scratch
+# Navigate to the repository root
 python graft_ckg.py requests_repo --verify
 ```
 *What to say:* *"Notice that in under a second, the engine indexed 12,000 LOC of Requests into 4,108 nodes and 11,474 hyper-edges, successfully populating all 4 layers with an 68.85% internal call resolution rate."*

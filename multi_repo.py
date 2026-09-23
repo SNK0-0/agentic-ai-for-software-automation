@@ -686,3 +686,36 @@ class WorkspaceCKGBuilder:
                 clean_g.add_edge(u, v, key=k, **clean_d)
             nx.write_gexf(clean_g, output_path)
         print(f"[*] Workspace CKG exported to: {output_path} ({format})")
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="GRAFT-CKG Multi-Repository Workspace Composition Engine")
+    parser.add_argument("config", nargs="?", default="examples/multi_repo_system/workspace.yaml", help="Path to workspace.yaml")
+    parser.add_argument("--verify", action="store_true", help="Build and verify workspace graph")
+    parser.add_argument("--rag", type=str, help="Run cross-repo RAG query with subtree grafting")
+    parser.add_argument("--export", type=str, help="Export path for graph (JSON, GraphML, GEXF)")
+    args = parser.parse_args()
+
+    builder = WorkspaceCKGBuilder(args.config)
+    builder.build()
+
+    if args.verify or (not args.rag and not args.export):
+        report = builder.verify_graph()
+        print("\n" + "=" * 70)
+        print("WORKSPACE CKG VERIFICATION REPORT")
+        print("=" * 70)
+        print(json.dumps(report, indent=2))
+
+    if args.rag:
+        res = builder.rag_query(args.rag)
+        print("\n" + "=" * 70)
+        print(f"CROSS-REPO RAG RESULT FOR: '{args.rag}'")
+        print("=" * 70)
+        print(json.dumps(res, indent=2))
+
+    if args.export:
+        ext = os.path.splitext(args.export)[-1].lower().lstrip(".")
+        fmt = ext if ext in ("json", "graphml", "gexf") else "json"
+        builder.export_graph(args.export, format=fmt)
+

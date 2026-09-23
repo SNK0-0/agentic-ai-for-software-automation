@@ -2,7 +2,7 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests: 31 Passed](https://img.shields.io/badge/tests-31%20passed-brightgreen.svg)]()
+[![Tests: 39 Passed](https://img.shields.io/badge/tests-39%20passed-brightgreen.svg)]()
 [![Tree-Sitter Polyglot](https://img.shields.io/badge/parsers-Python%20%7C%20Go%20%7C%20JS%2FTS%20%7C%20Protobuf-orange.svg)]()
 [![Status: Complete](https://img.shields.io/badge/status-Production--Ready-blue.svg)]()
 
@@ -137,8 +137,8 @@ The visual workbench provides real-time exploration of multi-layer graphs with z
 
 ### Setup
 ```bash
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
+git clone https://github.com/SNK0-0/agentic-ai-for-software-automation.git
+cd agentic-ai-for-software-automation
 pip install -r requirements.txt
 ```
 
@@ -146,7 +146,7 @@ pip install -r requirements.txt
 ```bash
 python -m unittest discover -s tests -v
 ```
-*(All 31 unit tests across all 6 test suites pass in < 0.5s).*
+*(All 39 unit tests across all 7 test suites pass in ~1.0s).*
 
 ---
 
@@ -238,53 +238,32 @@ python bench/run_benchmark.py --repo examples/polyglot_system
 
 ---
 
-## 8. Repository Structure & GitHub Submission Guide
+## 8. Repository Structure & System Architecture
 
-### Clean Directory Layout
+### Directory Layout
 ```
 ├── graft_ckg.py              # Core 4-Layer CKG Engine (Lsyn, Ldep, Lflow, Lsem, Lcontract)
 ├── polyglot.py               # Tree-Sitter Polyglot Parser (Go, JS/TS, Python, Protobuf)
 ├── traversal.py              # Traversal Engine (blast_radius, consumers, subtree grafting)
 ├── remediation.py            # 5-Stage Closed-Loop Auto-Remediation Engine
+├── multi_repo.py             # Multi-Repository Workspace Engine & Canonical Contract Unification
 ├── serve_ckg.py              # Visual Workbench & Standalone HTML Exporter
-├── requirements.txt          # Minimal Python dependencies
-├── .gitignore                # Clean exclusions for caches, virtualenvs, and test artifacts
+├── requirements.txt          # Python dependencies
+├── .gitignore                # Exclusions for caches, graphs, and artifacts
 ├── examples/
 │   ├── polyglot_system/      # Multi-service showcase (Go, Python, TypeScript, Protobuf)
-│   └── mixed_service/        # Python Flask backend + JS/TS frontend
+│   ├── mixed_service/        # Python Flask backend + JS/TS frontend
+│   └── multi_repo_system/    # Multi-repo workspace fixture with shared protobuf contracts
 ├── tests/
 │   ├── test_traversal.py     # Traversal & blast radius tests
 │   ├── test_remediation.py   # 5-stage self-healing closed-loop tests
 │   ├── test_gap_fixes.py     # Polyglot parser & dataflow compliance tests
 │   ├── test_contract_layer.py# Contract resolution & proto binding tests
 │   ├── test_dependency_resolution.py # Call graph & CHA tests
-│   └── test_polyglot_integration.py  # End-to-end integration tests
+│   ├── test_polyglot_integration.py  # End-to-end integration tests
+│   └── test_multi_repo.py    # Multi-repo workspace & cross-service tests
 └── bench/                    # Empirical evaluation scripts and ground-truth labels
 ```
-
-### Instructions to Push to Your GitHub Repository
-1. Navigate to this directory in your terminal:
-   ```bash
-   cd C:\Users\krish\Downloads\SCKG_Build-v2\SCKG_Build-v2
-   ```
-2. Initialize git and configure main branch:
-   ```bash
-   git init
-   git branch -M main
-   ```
-3. Stage all source files (the updated `.gitignore` automatically prevents temporary caches or large clones from being staged):
-   ```bash
-   git add .
-   ```
-4. Commit:
-   ```bash
-   git commit -m "Initial release of Polyglot SCKG Engine with Traversal and Self-Healing capabilities"
-   ```
-5. Add your GitHub remote and push:
-   ```bash
-   git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>.git
-   git push -u origin main
-   ```
 
 ---
 

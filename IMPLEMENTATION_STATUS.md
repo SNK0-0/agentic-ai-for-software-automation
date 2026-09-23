@@ -2,7 +2,7 @@
 
 ## v2.1 (Single-Repo Polyglot Layer Complete) — All Gaps Closed
 
-All proposals and claims for single-repository polyglot CKG construction from the GRAFT-CKG paper (*Ranjan et al.*) and `POLYGLOT_DEFINITION_OF_DONE.md` are fully implemented and verified:
+All architectural requirements and capabilities for single-repository polyglot CKG construction are fully implemented and verified:
 - **JS/TS Completeness**:
   - Arrow functions (`arrow_function`) and function expressions in variable declarators registered as first-class function nodes.
   - Constructor calls (`new Store()`) extracted via `new_expression` into `Ldep` `CALLS` edges.
@@ -39,7 +39,7 @@ All proposals and claims for single-repository polyglot CKG construction from th
 ## v2 (2026-09-11 audit) — what changed
 
 - **Go adapter** (tree-sitter-go): functions, receiver methods (`Type.Method` ids), struct/interface types, short-var defs, imports.
-- **Contract Layer `Lcontract`** (PhD proposal Layer 2 / Gap 1.1): `.proto` files are parsed into canonical
+- **Contract Layer `Lcontract`** (Inter-Service Contract Layer): `.proto` files are parsed into canonical
   `contract::Service` / `contract::Service.Rpc` nodes (`DEFINES_RPC`, request/response types). Producers bind via
   `IMPLEMENTS` (Python `*Servicer` subclasses incl. template subclasses, Go `Register<Svc>Server` + impl type incl.
   `new(T)` / `&T{}` / cross-file types, JS `addService` pair + shorthand handlers). Consumers bind via `CONSUMES`

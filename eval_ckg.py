@@ -6,7 +6,7 @@ Implements the experimental protocol and metrics defined in:
      - MRR@5, Hits@1, Hits@5, Context Recall@10
      - Token Redundancy / Prompt Bloat Reduction
      - Multi-hop & Layer Ablation Analysis
-  2. PhD Proposal (Gaps 3.3.1, 3.3.2, Section 4):
+  2. Multi-Layer Extraction & Traversal Verification:
      - Layer-wise node & edge extraction validation (Lsyn, Ldep, Lflow, Lsem)
      - Adjacency & Traversal API verification (Blast radius, callers, def-use)
 """

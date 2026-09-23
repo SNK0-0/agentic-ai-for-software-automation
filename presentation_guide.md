@@ -1,17 +1,17 @@
-# GRAFT-CKG: Research Presentation & Demonstration Guide
-**Project:** Whole-Repository 4-Layer Code Knowledge Graph & Agent Context Layer  
-**Reference Paper:** *GRAFT-CKG: Generalized Relational Abstraction and Functional Topology for Whole-Repository Code Knowledge Graphs and Agent Context Layers* (Ranjan, Elhence, Krishna, Shrey, Chamola)  
-**Target Repository Benchmarks:** Real-world SWE-bench Python Repositories (`requests`, `flask`, `marshmallow`)
+# SCKG: Project Walkthrough & Demonstration Guide
+**Project:** Whole-Repository Polyglot Code Knowledge Graph & Agent Context Layer  
+**Core Architecture:** 4-Layer Hyper-Relational CKG with Inter-Service Contracts & Closed-Loop Self-Healing  
+**Target Benchmarks:** Distributed Microservices (Online Boutique) and Real-World Repositories (`requests`, `flask`, `marshmallow`)
 
 ---
 
 ## 1. Executive Summary (The 60-Second Pitch)
 
-> *"To address the context fragmentation and token bloat of standard Dense RAG on SWE-bench, we have implemented the complete 4-layer GRAFT-CKG framework for Python repositories. Source code is deterministically structured into Syntactic, Dependency, Dataflow, and Semantic planes, annotated with 4D hyper-edge metadata vectors. The engine supports two query modalities: layered adjacency queries and natural language RAG with deterministic subtree grafting. It cuts token redundancy by ~75% while providing a verifiable evaluation scorecard directly matching Table I and Table II of the paper."*
+> *"To address the context fragmentation and token bloat of standard Dense RAG on distributed codebases, we have implemented the complete 4-layer GRAFT-CKG framework. Source code is deterministically structured into Syntactic, Dependency, Dataflow, and Semantic planes, annotated with 4D hyper-edge metadata vectors. The engine supports two query modalities: layered adjacency queries and natural language RAG with deterministic subtree grafting. It cuts token redundancy by ~75% while providing verifiable evaluation scorecards."*
 
 ---
 
-## 2. Concept-by-Concept Breakdown (Paper $\leftrightarrow$ Implementation)
+## 2. Concept-by-Concept Breakdown (Architecture $\leftrightarrow$ Implementation)
 
 ### A. The 4 Synchronized Topological Layers
 
@@ -45,12 +45,11 @@ $$m = \begin{bmatrix} d_{scope} \\ f_{call} \\ c_{type} \\ id_{ctx} \end{bmatrix
 
 ---
 
-## 3. Addressing the Scholar's Request: Explainability via RAG & Adjacency
-
-The scholar requested:
-> *"The graph should be able to explain all 4 layers using RAG or adjacency query."*
-
-Our system answers this through three concrete query interfaces:
+## 3. Multi-Modal Query Interfaces: Explainability via RAG & Adjacency
+ 
+A core capability of the graph engine is explaining any code entity across all 4 layers via adjacency and natural language RAG queries:
+ 
+Our system provides this through three concrete query interfaces:
 
 ### 1. Multi-Layer Explanation Query (`--explain <symbol>`)
 Synthesizes all 4 layers for any class, function, or method into a structured JSON report:
@@ -107,7 +106,7 @@ We ran the automated evaluation suite ([`eval_ckg.py`](eval_ckg.py)) across real
 
 ## 5. The 3-Minute Live Demonstration Script
 
-When presenting to your scholar, run these 4 simple steps in your terminal:
+When demonstrating the project, run these simple steps in your terminal:
 
 ### Step 1: Show Real-Time Graph Construction & Layer Balance
 ```powershell
@@ -120,7 +119,7 @@ python graft_ckg.py requests_repo --verify
 ```powershell
 python graft_ckg.py requests_repo --explain "Session.request"
 ```
-*What to say:* *"Here is the 4-layer explainability you requested. At a glance, the agent can see its AST containment, outward calls and blast radius, def-use variables, and semantic docstring intent."*
+*What to say:* *"Here is the 4-layer explainability. At a glance, the agent can see its AST containment, outward calls and blast radius, def-use variables, and semantic docstring intent."*
 
 ### Step 3: Demonstrate RAG & Deterministic Subtree Grafting
 ```powershell

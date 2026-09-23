@@ -11,28 +11,28 @@
 ---
 
 ## Table of Contents
-1. [Overview & PhD Proposal Alignment](#1-overview--phd-proposal-alignment)
+1. [Project Overview & Motivation](#1-project-overview--motivation)
 2. [Topological Graph Architecture](#2-topological-graph-architecture)
 3. [Core Capabilities](#3-core-capabilities)
-   - [Objective 1: Polyglot 4-Layer + Contract CKG Construction](#objective-1-polyglot-4-layer--contract-ckg-construction)
-   - [Objective 2: Graph-Guided Traversal & Subtree Grafting](#objective-2-graph-guided-traversal--subtree-grafting)
-   - [Objective 3: 5-Stage Closed-Loop Auto-Remediation](#objective-3-5-stage-closed-loop-auto-remediation)
+   - [Core Pillar 1: Polyglot 4-Layer + Contract CKG Construction](#core-pillar-1-polyglot-4-layer--contract-ckg-construction)
+   - [Core Pillar 2: Graph-Guided Traversal & Subtree Grafting](#core-pillar-2-graph-guided-traversal--subtree-grafting)
+   - [Core Pillar 3: 5-Stage Closed-Loop Auto-Remediation](#core-pillar-3-5-stage-closed-loop-auto-remediation)
 4. [Interactive Visual Workbench & Standalone HTML Exporter](#4-interactive-visual-workbench--standalone-html-exporter)
 5. [Installation & Quickstart](#5-installation--quickstart)
 6. [CLI & API Guide](#6-cli--api-guide)
 7. [Benchmark Evaluation & Verification](#7-benchmark-evaluation--verification)
-8. [Repository Structure & GitHub Submission Guide](#8-repository-structure--github-submission-guide)
+8. [Repository Structure & System Architecture](#8-repository-structure--system-architecture)
 
 ---
 
-## 1. Overview & PhD Proposal Alignment
+## 1. Project Overview & Motivation
 
 Modern microservice architectures break single-repository assumptions: business logic spans distributed microservices written in multiple languages (Python, Go, JavaScript/TypeScript) that communicate via explicit Interface Definition Language contracts (Protobuf/gRPC, OpenAPI, REST).
 
-This repository implements the complete end-to-end framework proposed in the PhD research program:
-* **Objective 1 (Build):** Polyglot, streaming Code Knowledge Graph construction with 4 intra-service layers ($L_{syn}, L_{dep}, L_{flow}, L_{sem}$) unified with an inter-service Contract Layer ($L_{contract}$), featuring Class-Hierarchy Analysis (CHA), receiver-type inference, and temperature-scaled polymorphic dispatch (Eq. 4).
-* **Objective 2 (Traverse):** Graph-guided traversal primitives for LLM agent context augmentation, computing structural blast radius, downstream consumers, reverse contract mappings, and token-bounded deterministic subtree grafting.
-* **Objective 3 (Self-Healing / Auto-Fix):** A 5-stage closed-loop remediation pipeline (`diagnose` $\to$ `attribute` $\to$ `generate_patch` $\to$ `validate` $\to$ `propose`) that detects contract skews, traces causal roots, synthesizes unified diff patches, and validates AST syntax and graph integrity.
+This repository implements a complete end-to-end framework for whole-repository and multi-service code automation:
+* **Core Pillar 1 (Build):** Polyglot, streaming Code Knowledge Graph construction with 4 intra-service layers ($L_{syn}, L_{dep}, L_{flow}, L_{sem}$) unified with an inter-service Contract Layer ($L_{contract}$), featuring Class-Hierarchy Analysis (CHA), receiver-type inference, and temperature-scaled polymorphic dispatch (Eq. 4).
+* **Core Pillar 2 (Traverse):** Graph-guided traversal primitives for LLM agent context augmentation, computing structural blast radius, downstream consumers, reverse contract mappings, and token-bounded deterministic subtree grafting.
+* **Core Pillar 3 (Self-Healing / Auto-Fix):** A 5-stage closed-loop remediation pipeline (`diagnose` $\to$ `attribute` $\to$ `generate_patch` $\to$ `validate` $\to$ `propose`) that detects contract skews, traces causal roots, synthesizes unified diff patches, and validates AST syntax and graph integrity.
 
 ---
 
@@ -73,7 +73,7 @@ Each relational hyper-edge carries a typed metadata tuple $m = \langle d_{scope}
 
 ## 3. Core Capabilities
 
-### Objective 1: Polyglot 4-Layer + Contract CKG Construction
+### Core Pillar 1: Polyglot 4-Layer + Contract CKG Construction
 * **Multi-Language AST Extraction:**
   * **Python:** Standard AST parsing with complete support for positional/keyword arguments (`posonlyargs`, `kwonlyargs`, `*args`, `**kwargs`), tuple/list unpacking, loop targets, augmented assignments, and return dataflow.
   * **JavaScript / TypeScript:** Tree-sitter AST engine parsing classes, interfaces, type aliases, arrow functions, constructor instantiations (`new Store()`), multi-line ES imports, and path aliases (`tsconfig.json`).
@@ -86,13 +86,13 @@ Each relational hyper-edge carries a typed metadata tuple $m = \langle d_{scope}
 * **Incremental Maintenance (`update_files`):**
   * Differential streaming graph updates: drops owned nodes and derived edges for changed files and re-parses in $O(\Delta)$ time without expensive whole-repo rebuilds.
 
-### Objective 2: Graph-Guided Traversal & Subtree Grafting (`traversal.py`)
+### Core Pillar 2: Graph-Guided Traversal & Subtree Grafting (`traversal.py`)
 * `blast_radius(symbol, max_depth, direction)`: Traverses multi-hop dependency closures (upstream callers, downstream callees, contract consumers/producers, dataflow mutations) and computes structural impact scores across files and services.
 * `downstream_consumers(contract)`: Instantly surfaces every cross-service consumer of a given service or RPC.
 * `contract_of(symbol)`: Reverse-resolves implementation functions and call sites to their governing contract schemas.
 * `deterministic_subtree_graft(symbol, max_tokens)`: Extracts the minimal topological execution slice (declarations, direct callees, bound contracts, data mutations) formatted within a fixed token budget for LLM prompt augmentation.
 
-### Objective 3: 5-Stage Closed-Loop Auto-Remediation (`remediation.py`)
+### Core Pillar 3: 5-Stage Closed-Loop Auto-Remediation (`remediation.py`)
 ```
  ┌──────────┐      ┌───────────┐      ┌────────────────┐      ┌──────────┐      ┌─────────┐
  │ Diagnose │ ───> │ Attribute │ ───> │ Generate Patch │ ───> │ Validate │ ───> │ Propose │
@@ -267,6 +267,6 @@ python bench/run_benchmark.py --repo examples/polyglot_system
 
 ---
 
-## References & PhD Proposal Context
-* **Vikas Ranjan**, *Bridging Code and Operations: A Semantic Code Knowledge Graph for Cross-Service Code Generation and Code-Level Remediation*, Department of Computer Science & Information Systems, BITS Pilani.
-* **GRAFT-CKG Paper:** *Generalized Relational Abstraction and Functional Topology for Code Knowledge Graphs*.
+## References & Related Work
+* **GRAFT-CKG:** *Generalized Relational Abstraction and Functional Topology for Code Knowledge Graphs*.
+* **Benchmark Systems:** Google Cloud Platform *Online Boutique* Microservices, SWE-bench (*requests*, *flask*, *marshmallow*).

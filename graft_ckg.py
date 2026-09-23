@@ -1334,7 +1334,7 @@ class CKGBuilder(ast.NodeVisitor):
         return re.findall(r"[a-z0-9]+", text.lower())
 
     # -------------------------------------------------------------
-    # QUERY & RETRIEVAL INTERFACES (Requested by Scholar)
+    # QUERY & RETRIEVAL INTERFACES (Adjacency, Symbol Explain, RAG)
     # -------------------------------------------------------------
     def adjacency_query(self, node_id, layers=None, direction="both", depth=1):
         """

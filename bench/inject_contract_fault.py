@@ -1,4 +1,4 @@
-"""Contract-violation fault injection & detection (Proposal Phase 4 (i), Tracker Week 11).
+"""Contract-violation fault injection & detection benchmark.
 
 Injects a breaking change into a copy of a repository's .proto contract WITHOUT
 updating consumers or producers, rebuilds the graph, and reports every code

@@ -1,5 +1,5 @@
 """
-SCKG Graph-Guided Traversal Engine (PhD Proposal Objective 2 / Phase 3).
+SCKG Graph-Guided Traversal Engine: Multi-Hop Closures & LLM Context Grafting.
 
 Provides deterministic, typed graph traversal primitives across the 4 CKG layers
 (Lsyn, Ldep, Lflow, Lsem) and the Contract Layer (Lcontract):

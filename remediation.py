@@ -1,5 +1,5 @@
 """
-SCKG Self-Healing & Code-Level Remediation Engine (PhD Proposal Objective 3 / Phase 4).
+SCKG Self-Healing & Code-Level Remediation Engine: 5-Stage Closed-Loop Auto-Fix.
 
 Implements the 5-Stage Closed-Loop Auto-Fixing Pipeline:
   Stage 1: Diagnose (diagnose)

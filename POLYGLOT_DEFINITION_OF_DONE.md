@@ -45,11 +45,11 @@ Status as of 2026-09-11 (v2). Every ❌ below was **reproduced** with `python be
 | # | Requirement | Evidence | Design |
 |---|---|---|---|
 | C1 | **Repo-namespaced node ids.** Two repos with `src/main.go:main` collapse when graphs are unioned (6 nodes → 4). | `multi_repo_id_collision` | id = `<repo_id>/<rel_path>:<qualname>`; `id_ctx` = `<repo_id>/<rel_path>`; `file::<repo_id>/<rel_path>`. Do this in single-repo mode with `repo_id` = repo directory name so nothing changes later |
-| C2 | **Canonical contract nodes across repos.** The same `.proto` is vendored in every service repo; `contract::Service.Rpc` must be one node keyed by `<proto package>.<Service>.<Rpc>`, with `DEFINED_IN` edges to each copy and a content hash per copy → contract-skew detection (the proposal's fault class (i)) | design | key by proto `package` + name; store `sha256(proto text)`; emit `CONTRACT_SKEW` when copies differ |
+| C2 | **Canonical contract nodes across repos.** The same `.proto` is vendored in every service repo; `contract::Service.Rpc` must be one node keyed by `<proto package>.<Service>.<Rpc>`, with `DEFINED_IN` edges to each copy and a content hash per copy → contract-skew detection (fault class: schema divergence) | design | key by proto `package` + name; store `sha256(proto text)`; emit `CONTRACT_SKEW` when copies differ |
 | C3 | **Resolution scope = repo (or package).** Name-based/unique fallbacks must never cross a repo; cross-repo edges only via `Lcontract` (gRPC/REST) and explicit package imports | `cross_service_name_leak` | same mechanism as B2 |
 | C4 | **Workspace manifest** listing repos, commit, language hints, proto dirs, ignore globs | — | `workspace.yaml`; `graft_ckg.py --workspace workspace.yaml` builds each repo and unions |
 | C5 | **Persistence + merge** (per-repo GraphML/JSON → Neo4j loader), incremental per-repo refresh | Tracker Wk 5/14 | build → serialise → `MERGE` by id; contract nodes shared |
-| C6 | **Contract versioning across commits** (Layer 3 lineage hook) | proposal §4 Phase 2 | contract node ↔ commit sha of the proto copy |
+| C6 | **Contract versioning across commits** (Layer 3 lineage hook) | Phase 2 | contract node ↔ commit sha of the proto copy |
 
 ## D. Recommended order (single repo first, as requested)
 
@@ -59,7 +59,7 @@ Status as of 2026-09-11 (v2). Every ❌ below was **reproduced** with `python be
 4. **Python/Go flow completeness**: params, tuple/for/with defs, `MUTATES`, `RETURNS`, Go `var`/assignment (1 day).
 5. **B3 receiver-type inference + CHA + Eq. (4)** (3–4 days) — re-run `bench/trace_oracle.py`; target disambiguation ≥ 0.6 and recall ≥ 0.6 on click/jinja.
 6. **B4 retrieval index + B5 incremental build** (2–3 days).
-7. Java adapter (tree-sitter-java) — required for adservice and for Train-Ticket before the proposal's multi-service evaluation; C# for cartservice is optional.
+7. Java adapter (tree-sitter-java) — required for adservice and for Train-Ticket before multi-service evaluation; C# for cartservice is optional.
 8. Then multi-repo: C2 canonical contracts + skew detection, C4 manifest, C5 persistence.
 
 Exit criterion for "polyglot single-repo done": probe keys all at expected values; `bench/trace_oracle.py` recall ≥ 0.6 and precision ≥ 0.8 on ≥ 3 OO repos; contract P/R ≥ 0.85/0.80 on Online Boutique **with generated code excluded**; golden-file tests green; `python -m unittest` green.

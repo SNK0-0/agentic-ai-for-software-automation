@@ -11,6 +11,7 @@ __pycache__/
 repo_graph.*
 *.cypher
 *.log
+DEMO_TERMINAL_COMMANDS.txt
 .cache/
 .pytest_cache/
 
